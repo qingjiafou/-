@@ -6,7 +6,6 @@
  Source Server Version : 80033
  Source Host           : localhost:3306
  Source Schema         : infor
-
  Target Server Type    : MySQL
  Target Server Version : 80033
  File Encoding         : 65001
