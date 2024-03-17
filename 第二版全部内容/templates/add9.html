@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增18级毕业论文信息</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add.css') }}">
+    <style>
+    </style>
+</head>
+<body>
+<div class="header">
+    <li><a href='/toindex' class="home-button">返回首页</a></li>
+    教学工作量采集与分析系统
+</div>
+<div class="content">
+    <h2>新增18级毕业论文信息</h2>
+    <form method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">学号</label>
+            <div class="layui-input-block">
+                <input type="text" name="学号" placeholder="请输入学号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="姓名" placeholder="请输入姓名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">学院</label>
+            <div class="layui-input-block">
+                <input type="text" name="学院" placeholder="请输入学院" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">专业</label>
+            <div class="layui-input-block">
+                <input type="text" name="专业" placeholder="请输入专业" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">专业号</label>
+            <div class="layui-input-block">
+                <input type="text" name="专业号" placeholder="请输入专业号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">年级</label>
+            <div class="layui-input-block">
+                <input type="text" name="年级" placeholder="请输入年级" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">毕业论文题目</label>
+            <div class="layui-input-block">
+                <input type="text" name="毕业论文题目" placeholder="请输入毕业论文题目" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">毕业论文成绩</label>
+            <div class="layui-input-block">
+                <input type="text" name="毕业论文成绩" placeholder="请输入毕业论文成绩" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">毕业论文指导老师</label>
+            <div class="layui-input-block">
+                <input type="text" name="毕业论文指导老师" placeholder="请输入毕业论文指导老师" class="layui-input">
+            </div>
+        </div>
+
+        <input class="btn" type="submit" name="submit" value="新增">
+    </form>
+            </div>
+<div class="footer"></div>
+</body>
+</html>
