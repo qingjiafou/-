@@ -2,40 +2,44 @@
 <html>
 <head>
     <title>教学工作量采集与分析系统</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" type="text/css" href="static\css\index.css">
     <script>
-      function redirectToWebsite(value) {
-      if (value !== "请选择要打开的表") {
-        window.location.href = value;
-        }
+      function menu_active(ulId){
+          if(ulId.style.display == "none"){
+              ulId.style.display = "block";
+          }else{
+              ulId.style.display = "none";
+          }
       }
-      </script>
+  </script>
 </head>
 <body>
 <!--导航栏 -->
-<ul>
-  <li><a href='/toindex'>首页</a></li>
-  <li><a href='/data_query'>数据查询</a></li>
-  <li class="lo"><a href='/logout'>注销</a></li>
-</ul>
-<div id="header">
-<img src='http://spoc.ccnu.edu.cn/images/banner-01.jpg'>
-</div>
-<select onchange="redirectToWebsite(this.value)">
-  <option value="请选择要打开的表">请选择要打开的表</option>
-  <option value="teacher_class">本科工作量课程排序表</option>
-  <option value="thesis_18">18级毕业论文</option>
-  <option value="internship_19">19级本科实习</option>
-  <option value="student_competition">学生竞赛</option>
-  <option value="student_research">学生科研</option>
-  <option value="undergraduate_mentorship">本科生导师制</option>
-  <option value="teaching_research_project">教研项目</option>
-  <option value="first_class_courses">一流课程</option>
-  <option value="teaching_achievement_award">教学成果奖</option>
-  <option value="public_service">公共服务</option>
-</select>
-<div id="nav" class="vertical-text">
-    <p>欢迎使用教学工作量采集与分析系统</p>
+<div class="box">
+	<ul class="ulList">
+		<li class="liList">
+			<p onclick="menu_active(ulOne)">首页</p>
+			<ul class="childUl" id="ulOne" style="display: none;">
+				<li>选项1.1</li>
+				<li>选项1.2</li>
+			</ul>
+		</li>
+		<li class="liList">
+			<p onclick="menu_active(ulTwo)">教师工作量采集</p>
+			<ul class="childUl" id="ulTwo" style="display: none;">
+				<li>选项2.1</li>
+				<li>选项2.2</li>
+			</ul>
+		</li>
+		<li class="liList">
+			<p onclick="menu_active(ulThree)">数据分析</p>
+			<ul class="childUl" id="ulThree" style="display: none;">
+				<li>选项3.1</li>
+				<li>选项3.2</li>  
+				<li>选项3.3</li>
+			</ul>
+		</li>
+	</ul>
 </div>
 </body>
 </html>
