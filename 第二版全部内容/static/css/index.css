@@ -48,3 +48,7 @@
     background-color: #8090f6;
     text-align: center;
 }
+.content {
+    flex: 1;
+    margin-left: 200px; /* 导航栏宽度 */
+}
