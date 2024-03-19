@@ -10,7 +10,10 @@
     } else {
         ulId.style.display = "none";
     }
-}
+        }
+    function goTofilePage() {
+            window.location.href = '/file_upload';
+        }
   </script>
 </head>
 <body>
@@ -22,7 +25,7 @@
 				<p onclick="menu_active(ulOne)">首页</p>
 			</li>
 			<li class="liList">
-				<p onclick="menu_active(ulTwo)">教师工作量采集</p>
+				<p onclick="goTofilePage()">教师工作量采集</p>
 			</li>
 			<li class="liList">
 				<p onclick="menu_active(ulThree)">教师工作量分析</p>
