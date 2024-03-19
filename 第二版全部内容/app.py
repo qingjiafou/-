@@ -54,8 +54,12 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# 创建上传文件目录
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
 # 允许上传的文件类型
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 
 # 检查文件扩展名是否符合要求
 def allowed_file(filename):
@@ -97,14 +101,14 @@ def upload_file():
     if file.filename == '':
         return 'No selected file'
 
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    if  allowed_file(file.filename):
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
         return 'File uploaded successfully'
 
     return 'Invalid file format'
-
-
+@app.route('/file_upload')
+def file_upload_page():
+    return render_template('file_upload.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
