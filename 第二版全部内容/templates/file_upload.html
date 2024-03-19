@@ -1,48 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>教学工作量采集</title>
-    <link rel="stylesheet" type="text/css" href="static\css\file_upload.css">
-    <script>
-      function menu_active(ulId){
-    if(ulId.style.display == "none"){
-        ulId.style.display = "block";
-    } else {
-        ulId.style.display = "none";
-    }
-        }
-    function goTofilePage() {
-            window.location.href = '/file_upload';
-        }
-  </script>
-</head>
+	<head>
+		<title>教学工作量采集与分析系统</title>
+		<link rel="stylesheet" type="text/css" href="static\css\file_upload.css">
+		<script src="static/script/script.js"></script>
+	</head>
 <body>
 <div class="container">
 <!--导航栏 -->
-	<div class="box">
-		<ul class="ulList">
-			<li class="liList">
-				<p onclick="menu_active(ulOne)">首页</p>
-			</li>
-			<li class="liList">
-				<p onclick="goTofilePage()">教师工作量采集</p>
-			</li>
-			<li class="liList">
-				<p onclick="menu_active(ulThree)">教师工作量分析</p>
-				<ul class="childUl" id="ulThree" style="display: none;">
-					<li>工作量查询</li>
-					<li>工作量汇总</li>  
-				</ul>
-			</li>
-			<li class="liList">
-				<p onclick="menu_active(ulFour)">教师工作量修改</p>
-				<ul class="childUl" id="ulFour" style="display: none;">
-					<li>工作量删除</li>
-					<li>工作量修改</li>  
-				</ul>
-			</li>
-		</ul>
-	</div>
+<div class="box">
+	<ul class="ulList">
+		<li class="liList">
+			<p onclick="gotoHome()">首页</p>
+		</li>
+		<li class="liList">
+			<p onclick="goTofilePage()">教师工作量采集</p>
+		</li>
+		<li class="liList">
+			<p onclick="menu_active(ulThree)">教师工作量分析</p>
+			<ul class="childUl" id="ulThree" style="display: none;">
+				<li onclick="gotoloadquery()" onmouseover="changeCursor(this)" onmouseout="resetCursor(this)">工作量查询</li>
+				<li onclick="gotoloadsummary()" onmouseover="changeCursor(this)" onmouseout="resetCursor(this)">工作量汇总</li>  
+			</ul>
+		</li>
+		<li class="liList">
+			<p onclick="menu_active(ulFour)">教师工作量修改</p>
+			<ul class="childUl" id="ulFour" style="display: none;">
+				<li onclick="gotoloaddelete()" onmouseover="changeCursor(this)" onmouseout="resetCursor(this)">工作量删除</li>
+				<li onclick="gotoloadmodify()" onmouseover="changeCursor(this)" onmouseout="resetCursor(this)">工作量修改</li>  
+			</ul>
+		</li>
+	</ul>
+</div>
 	<div class="content">
 		<!--个人设置-->
 		<div class="Top">

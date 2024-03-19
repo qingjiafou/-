@@ -110,6 +110,22 @@ def upload_file():
 def file_upload_page():
     return render_template('file_upload.html')
 
+@app.route('/load_query')
+def load_search():
+    return render_template('load_query.html')
+
+@app.route('/load_summary')
+def load_summary():
+    return render_template('load_summary.html')
+
+@app.route('/load_delete')
+def load_delete():
+    return render_template('load_delete.html')
+
+@app.route('/load_modify')
+def load_modify():
+    return render_template('load_modify.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
 

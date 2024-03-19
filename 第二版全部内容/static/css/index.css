@@ -71,3 +71,6 @@
     background-color: lightblue; /* 设置背景颜色 */
     padding: 30px;
 }
+.cursor-pointer {
+    cursor: pointer;
+}
