@@ -7,7 +7,7 @@ import os
 db_host = 'localhost'
 db_user = 'root'
 db_password = 'Mapanwei0116'
-db_name = 'teacher'
+db_name = 'teacher_work'
 
 
 def db_query(sql):

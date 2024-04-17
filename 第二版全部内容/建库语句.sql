@@ -1,7 +1,29 @@
 
-
 -- ----------------------------
--- 1、本科工作量课程排序表
+-- 1、本科工作量教师排序表
+-- ----------------------------
+DROP TABLE IF exists undergraduate_workload_teacher_ranking;
+CREATE TABLE undergraduate_workload_teacher_ranking (
+  teacher_id VARCHAR(56) PRIMARY KEY COMMENT '教工号',
+  teacher_name VARCHAR(12) COMMENT '教师名称',
+  undergraduate_course_total_hours DOUBLE(6,2) COMMENT '本科课程总学时',
+  total_course_hours DOUBLE(6,2) COMMENT '课程总学时',
+  graduation_thesis_student_count INT COMMENT '毕业论文学生人数',
+  graduation_thesis_p DOUBLE(6,2) COMMENT '毕业论文P',
+  teaching_internship_student_count INT COMMENT '指导教学实习人数',
+  teaching_internship_weeks INT COMMENT '指导教学实习周数',
+  teaching_internship_p DOUBLE(6,2) COMMENT '指导教学实习P',
+  responsible_internship_construction_management_p DOUBLE(6,2) COMMENT '负责实习点建设与管理P',
+  guiding_undergraduate_competition_p DOUBLE(6,2) COMMENT '指导本科生竞赛P',
+  guiding_undergraduate_research_p DOUBLE(6,2) COMMENT '指导本科生科研P',
+  undergraduate_tutor_system DOUBLE(6,2) COMMENT '本科生导师制',
+  teaching_research_and_reform_p DOUBLE(6,2) COMMENT '教研教改P',
+  first_class_course DOUBLE(6,2) COMMENT '一流课程',
+  teaching_achievement_award DOUBLE(6,2) COMMENT '教学成果奖',
+  public_service DOUBLE(6,2) COMMENT '公共服务'
+);
+-- ----------------------------
+-- 2、本科工作量课程排序表
 -- ----------------------------
 DROP TABLE IF exists undergraduate_workload_course_ranking;
 CREATE TABLE undergraduate_workload_course_ranking (
@@ -30,29 +52,7 @@ CREATE TABLE undergraduate_workload_course_ranking (
   PRIMARY KEY (course_code, teaching_class),
   FOREIGN KEY (teacher_id) REFERENCES undergraduate_workload_teacher_ranking (teacher_id)
 );
--- ----------------------------
--- 2、本科工作量教师排序表
--- ----------------------------
-DROP TABLE IF exists undergraduate_workload_teacher_ranking;
-CREATE TABLE undergraduate_workload_teacher_ranking (
-  teacher_id VARCHAR(56) PRIMARY KEY COMMENT '教工号',
-  teacher_name VARCHAR(12) COMMENT '教师名称',
-  undergraduate_course_total_hours DOUBLE(6,2) COMMENT '本科课程总学时',
-  total_course_hours DOUBLE(6,2) COMMENT '课程总学时',
-  graduation_thesis_student_count INT COMMENT '毕业论文学生人数',
-  graduation_thesis_p DOUBLE(6,2) COMMENT '毕业论文P',
-  teaching_internship_student_count INT COMMENT '指导教学实习人数',
-  teaching_internship_weeks INT COMMENT '指导教学实习周数',
-  teaching_internship_p DOUBLE(6,2) COMMENT '指导教学实习P',
-  responsible_internship_construction_management_p DOUBLE(6,2) COMMENT '负责实习点建设与管理P',
-  guiding_undergraduate_competition_p DOUBLE(6,2) COMMENT '指导本科生竞赛P',
-  guiding_undergraduate_research_p DOUBLE(6,2) COMMENT '指导本科生科研P',
-  undergraduate_tutor_system DOUBLE(6,2) COMMENT '本科生导师制',
-  teaching_research_and_reform_p DOUBLE(6,2) COMMENT '教研教改P',
-  first_class_course DOUBLE(6,2) COMMENT '一流课程',
-  teaching_achievement_award DOUBLE(6,2) COMMENT '教学成果奖',
-  public_service DOUBLE(6,2) COMMENT '公共服务',
-);
+
 -- ----------------------------
 -- 3、毕业论文
 -- ----------------------------

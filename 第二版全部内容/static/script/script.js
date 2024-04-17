@@ -17,11 +17,8 @@ function goTofilePage() {
 function gotoHome(){
         window.location.href='/toindex';
 }
-function gotoloadquery(){
-        window.location.href='/load_query';
-}
-function gotoloadsummary(){
-        window.location.href='/load_summary';
+function goToanalysePage(){
+        window.location.href='/analyse_page';
 }
 function goTomodifyPage(){
         window.location.href='/modify_page';
