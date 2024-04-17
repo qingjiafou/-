@@ -115,9 +115,16 @@ def file_upload_page():
 def modify_page():
     return render_template('modify_page.html')
 
-@app.route('/analyse_page')
+@app.route('/analyse_page', methods=['POST','GET'])
 def analyse_page():
-    return render_template('modify_page.html')
+     if request.method == 'POST':
+        teacher_id = request.form['teacher_id']
+        teacher_name = request.form['teacher_name']
+        sql="select * from `undergraduate_workload_teacher_ranking` where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        result=db_query(sql)
+        return render_template('analyse_page.html',**locals())
+     else:
+        return render_template('analyse_page.html',**locals())
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
 
