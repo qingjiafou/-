@@ -118,14 +118,10 @@ def load_search():
 def load_summary():
     return render_template('load_summary.html')
 
-@app.route('/load_delete')
-def load_delete():
-    return render_template('load_delete.html')
 
-@app.route('/load_modify')
+@app.route('/modify_page')
 def load_modify():
-    return render_template('load_modify.html')
-
+    return render_template('modify_page.html')
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
 

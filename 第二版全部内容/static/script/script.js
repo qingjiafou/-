@@ -23,9 +23,6 @@ function gotoloadquery(){
 function gotoloadsummary(){
         window.location.href='/load_summary';
 }
-function gotoloaddelete(){
-        window.location.href='/load_delete';
-}
-function gotoloadmodify(){
-        window.location.href='/load_modify';
+function goTomodifyPage(){
+        window.location.href='/modify_page';
 }
