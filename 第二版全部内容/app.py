@@ -111,9 +111,26 @@ def file_upload_page():
     return render_template('file_upload.html')
 
 
-@app.route('/modify_page')
+@app.route('/modify_page', methods=['POST','GET'])
 def modify_page():
+    worksheet = request.form.get('worksheet')
+    # 获取用户输入的教工号和教师名称
+    teacher_id = request.form.get('teacher_id')
+    teacher_name = request.form.get('teacher_name')  
+    if worksheet=="NULL":
+        return render_template('modify_page.html')
+    elif worksheet=="undergraduate_workload_course_ranking":
+        sql="select * from undergraduate_workload_course_ranking where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from undergraduate_workload_course_ranking;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
     return render_template('modify_page.html')
+
 
 @app.route('/analyse_page', methods=['POST','GET'])
 def analyse_page():
@@ -125,6 +142,20 @@ def analyse_page():
         return render_template('analyse_page.html',**locals())
      else:
         return render_template('analyse_page.html',**locals())
+     
+@app.route('/analyse_page/update',methods=['POST','GET'])
+def update():
+    if request.method == 'POST':
+        # 获取前端发送的 JSON 数据
+        json_data = request.json
+        
+        # 在这里处理接收到的 JSON 数据
+        print(json_data)
+        
+        # 返回响应，这里返回一个简单的字符串
+        return 'Data received successfully'
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True)
 
