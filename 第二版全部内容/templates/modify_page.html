@@ -3,6 +3,7 @@
 <head>
     <title>教学工作量采集与分析系统</title>
     <link rel="stylesheet" type="text/css" href="static\css\modify_page.css">
+	<script src="static/script/jquery-3.7.1.js"></script>
     <script src="static/script/script.js"></script>
 </head>
 <body>
@@ -67,10 +68,13 @@
 						{% for row in result %}
 							<tr>
 								{% for value in row %}
-								<td><span class="editable" data-value="{{ value }}">{{ value }}</span></td> <!-- 将每个单元格改为可编辑 -->
+								<td><span class="editable" data-value="{{ value }}" contenteditable="false" >{{ value }}</span></td> <!-- 将每个单元格改为可编辑 -->
 								{% endfor %}
-							</tr>
-							<td><button class="edit-btn">编辑</button><button class="save-btn" style="display:none;">保存</button></td> <!-- 添加编辑和保存按钮 -->
+							<td>
+								<button class="edit-btn">编辑</button>
+								<button class="save-btn" style="display:none;">保存</button>
+							</td>
+						</tr>
 						{% endfor %}
 					</tbody>
 				</table>
@@ -78,55 +82,52 @@
 		</div>
 	</div>
 	<script>
-		// 当编辑按钮点击时触发
-		document.querySelectorAll('.edit-btn').forEach(function(button) {
-			button.addEventListener('click', function() {
-				var row = this.parentNode.parentNode;
-				row.querySelectorAll('.editable').forEach(function(cell) {
-					var value = cell.getAttribute('data-value');
-					var input = document.createElement('input');
-					input.type = 'text';
-					input.value = value;
-					cell.innerHTML = '';
-					cell.appendChild(input);
-				});
-				// 显示保存按钮，隐藏编辑按钮
-				row.querySelector('.edit-btn').style.display = 'none';
-				row.querySelector('.save-btn').style.display = 'inline-block';
-			});
-		});
-	
-		// 当保存按钮点击时触发
-		document.querySelectorAll('.save-btn').forEach(function(button) {
-			button.addEventListener('click', function() {
-				var row = this.parentNode.parentNode;
-				var rowData = {};
-				row.querySelectorAll('.editable').forEach(function(cell) {
-					var columnName = cell.getAttribute('data-column'); // 获取列名
-					var value = cell.querySelector('input').value;
-					rowData[columnName] = value;
-					cell.innerText = value;
-					cell.setAttribute('data-value', value);
-				});
-	
-				// 发送AJAX请求保存数据
-				var xhr = new XMLHttpRequest();
-				xhr.open('POST', '/analyse_page/update', true);
-				xhr.setRequestHeader('Content-Type', 'application/json');
-				xhr.onload = function() {
-					if (xhr.status === 200) {
-						console.log('Data updated successfully');
-					} else {
-						console.error('Failed to update data');
-					}
-				};
-				xhr.send(JSON.stringify(rowData));
-	
-				// 隐藏保存按钮，显示编辑按钮
-				row.querySelector('.save-btn').style.display = 'none';
-				row.querySelector('.edit-btn').style.display = 'inline-block';
-			});
-		});
+	$(document).ready(function() {
+    $(document).on('click', '.edit-btn', function() {
+        // 编辑按钮点击事件处理
+        var $row = $(this).closest('tr');
+		console.log($row.html());
+        // 将所有单元格设置为可编辑状态
+        $row.find('.editable').attr('contenteditable', 'true');
+        // 隐藏编辑按钮，显示保存按钮
+        $row.find('.edit-btn').hide();
+        $row.find('.save-btn').show();
+    });
+
+    $(document).on('click', '.save-btn', function() {
+		var $row = $(this).closest('tr');
+
+        // 将所有单元格设置为不可编辑状态
+        $row.find('.editable').attr('contenteditable', 'false');
+        var rowData = {};
+
+        // 遍历编辑中的单元格
+        $row.find('.editable.editing').each(function() {
+            var key = $(this).data('value');
+            var value = $(this).text();
+            rowData[key] = value;
+        });
+
+        // 发送数据到后端
+        $.ajax({
+            type: 'POST',
+            url: '/analyse_page/update',
+            contentType: 'application/json',
+            data: JSON.stringify(rowData),
+            success: function(response) {
+                console.log(response);
+                // 根据后端响应进行进一步处理
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // 完成保存后恢复状态
+        $row.find('.edit-btn').show();
+        $row.find('.save-btn').hide();
+    });
+});
 	</script>
 </body>
 </html>
