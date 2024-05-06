@@ -56,6 +56,7 @@
 			<div class="search_result">
 				<h1>查询结果</h1>
 				<table>
+					<caption>{{ table_name }}</caption>
 					<thead>
 						<tr>
 							{% for column in columns %}
@@ -68,7 +69,7 @@
 						{% for row in result %}
 							<tr>
 								{% for value in row %}
-								<td><span class="editable" data-value="{{ value }}" contenteditable="false" >{{ value }}</span></td> <!-- 将每个单元格改为可编辑 -->
+								<td><span class="editable"  data-value="{{ value }}" contenteditable="false" >{{ value }}</span></td> <!-- 将每个单元格改为可编辑 -->
 								{% endfor %}
 							<td>
 								<button class="edit-btn">编辑</button>
@@ -86,7 +87,6 @@
     $(document).on('click', '.edit-btn', function() {
         // 编辑按钮点击事件处理
         var $row = $(this).closest('tr');
-		console.log($row.html());
         // 将所有单元格设置为可编辑状态
         $row.find('.editable').attr('contenteditable', 'true');
         // 隐藏编辑按钮，显示保存按钮
@@ -95,23 +95,33 @@
     });
 
     $(document).on('click', '.save-btn', function() {
-		var $row = $(this).closest('tr');
+	    var $row = $(this).closest('tr');
+    	var rowData = {};
 
-        // 将所有单元格设置为不可编辑状态
-        $row.find('.editable').attr('contenteditable', 'false');
-        var rowData = {};
+    	// 获取列名
+    	var columnNames = [];
+    	$row.closest('table').find('thead th').each(function() {
+        columnNames.push($(this).text());
+    	});
+		//获取表名数据
+		$row.closest('table').find('caption').each(function() {
+        var value=$(this).text();
+		var columnName = "表名"; // 获取对应的列名
+		rowData[columnName] = value; // 存储数据
+    	});
+    	// 获取数据
+    	$row.find('.editable').each(function(index) {
+        var value = $(this).text();
+        var columnName = columnNames[index]; // 获取对应的列名
+        rowData[columnName] = value; // 存储数据
+    	});
 
-        // 遍历编辑中的单元格
-        $row.find('.editable.editing').each(function() {
-            var key = $(this).data('value');
-            var value = $(this).text();
-            rowData[key] = value;
-        });
-
+		// 将所有单元格设置为不可编辑状态
+		$row.find('.editable').attr('contenteditable', 'false');
         // 发送数据到后端
         $.ajax({
             type: 'POST',
-            url: '/analyse_page/update',
+            url: '/modify_page/update',
             contentType: 'application/json',
             data: JSON.stringify(rowData),
             success: function(response) {

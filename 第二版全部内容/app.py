@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,jsonify
 import pymysql
 import mysql.connector
 from werkzeug.utils import secure_filename
@@ -117,9 +117,12 @@ def modify_page():
     # 获取用户输入的教工号和教师名称
     teacher_id = request.form.get('teacher_id')
     teacher_name = request.form.get('teacher_name')  
+    table_name=None
+
     if worksheet=="NULL":
         return render_template('modify_page.html')
     elif worksheet=="undergraduate_workload_course_ranking":
+        table_name = "本科工作量课程排序表"
         sql="select * from undergraduate_workload_course_ranking where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
         sql_name="show full columns from undergraduate_workload_course_ranking;"
         result=db_query(sql)
@@ -130,6 +133,46 @@ def modify_page():
             columns.append(column_comment)
         return render_template('modify_page.html',**locals())
     return render_template('modify_page.html')
+@app.route('/modify_page/update',methods=['POST','GET'])
+def update():
+    if request.method == 'POST':
+        # 获取前端发送的 JSON 数据
+        json_data = request.get_json()
+        
+        if json_data:
+            table_name=json_data["表名"]
+            if table_name == "本科工作量课程排序表":
+                sql = "UPDATE undergraduate_workload_course_ranking SET academic_year = '{0}', semester = '{1}', calendar_year = '{2}', half_year = '{3}', course_name = '{4}', seminar_hours = '{5}', lecture_hours = '{6}', lab_hours = '{7}', enrolled_students = '{8}', student_weight_coefficient_b = '{9}', course_type_coefficient_a = '{10}', total_lecture_hours_p1 = '{11}', lab_group_count = '{12}', lab_coefficient = '{13}', total_lab_hours_p2 = '{14}', course_split_ratio_for_engineering_center = '{15}', total_undergraduate_course_hours = '{16}', total_course_hours = '{17}', teacher_id = '{18}', teacher_name = '{19}' WHERE course_code = '{20}' AND teaching_class = '{21}'".format(
+                    json_data["学年"],
+                    json_data["学期"],
+                    json_data["自然年"],
+                    json_data["上下半年"],
+                    json_data["课程名称"],
+                    json_data["研讨学时"],
+                    json_data["授课学时"],
+                    json_data["实验学时"],
+                    json_data["选课人数"],
+                    json_data["学生数量权重系数B"],
+                    json_data["课程类型系数A"],
+                    json_data["理论课总学时P1"],
+                    json_data["实验分组数"],
+                    json_data["实验课系数"],
+                    json_data["实验课总学时P2"],
+                    json_data["课程拆分占比（工程中心用）"],
+                    json_data["本科课程总学时"],
+                    json_data["课程总学时"],
+                    json_data["教工号"],
+                    json_data["教师名称"],
+                    json_data["课程号"],
+                    json_data["教学班"],
+                )
+                db_exec(sql)
+                return redirect(url_for('modify_page'))
+        else:
+            print("NO DATA")
+        # 在这里处理接收到的 JSON 数据
+        # 返回响应，这里返回一个简单的字符串
+        return render_template('modify_page.html')
 
 
 @app.route('/analyse_page', methods=['POST','GET'])
@@ -143,17 +186,6 @@ def analyse_page():
      else:
         return render_template('analyse_page.html',**locals())
      
-@app.route('/analyse_page/update',methods=['POST','GET'])
-def update():
-    if request.method == 'POST':
-        # 获取前端发送的 JSON 数据
-        json_data = request.json
-        
-        # 在这里处理接收到的 JSON 数据
-        print(json_data)
-        
-        # 返回响应，这里返回一个简单的字符串
-        return 'Data received successfully'
 
 
 if __name__ == '__main__':
