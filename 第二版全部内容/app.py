@@ -132,6 +132,105 @@ def modify_page():
             column_comment = column[8]
             columns.append(column_comment)
         return render_template('modify_page.html',**locals())
+    elif worksheet=="undergraduate_thesis":
+        table_name="毕业论文"
+        sql="select * from undergraduate_thesis where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from undergraduate_thesis;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="department_internship":
+        table_name="本科实习"
+        sql="select * from department_internship where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from department_internship;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="competition_awards":
+        table_name="学生竞赛"
+        sql="select * from competition_awards where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from competition_awards;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="student_research":
+        table_name="学生科研"
+        sql="select * from student_research where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from student_research;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="undergraduate_mentorship_system":
+        table_name="本科生导师制"
+        sql="select * from undergraduate_mentorship_system where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from undergraduate_mentorship_system;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="educational_research_project":
+        table_name="教研项目"
+        sql="select * from educational_research_project where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from educational_research_project;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="first_class_courses":
+        table_name="一流课程"
+        sql="select * from first_class_courses where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from first_class_courses;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="teaching_achievement_awards":
+        table_name="教学成果奖"
+        sql="select * from teaching_achievement_awards where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from teaching_achievement_awards;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
+    elif worksheet=="public_services":
+        table_name="公共服务"
+        sql="select * from public_services where teacher_id='{0}' and teacher_name='{1}'".format(teacher_id,teacher_name)
+        sql_name="show full columns from public_services;"
+        result=db_query(sql)
+        columns_all=db_query(sql_name)
+        columns=[]
+        for column in columns_all:
+            column_comment = column[8]
+            columns.append(column_comment)
+        return render_template('modify_page.html',**locals())
     return render_template('modify_page.html')
 @app.route('/modify_page/update',methods=['POST','GET'])
 def update():
@@ -164,7 +263,22 @@ def update():
                     json_data["教工号"],
                     json_data["教师名称"],
                     json_data["课程号"],
-                    json_data["教学班"],
+                    json_data["教学班"]
+                )
+                db_exec(sql)
+                return redirect(url_for('modify_page'))
+            elif table_name=="毕业论文":
+                sql="update undergraduate_thesis SET student_name = '{0}',college = '{1}',major = '{2}',major_id = '{3}',grade = '{4}',thesis_topic = '{5}', thesis_grade = '{6}',teacher_name = '{7}',teacher_id = '{8}'WHERE student_id = '{9}';".format(
+                    json_data["学生姓名"],
+                    json_data["学院"],
+                    json_data["专业"],
+                    json_data["专业号"],
+                    json_data["年级"],
+                    json_data["毕业论文题目"],
+                    json_data["毕业论文成绩"],
+                    json_data["毕业论文指导老师"],
+                    json_data["毕业论文指导老师工号"],
+                    json_data["学生学号"]
                 )
                 db_exec(sql)
                 return redirect(url_for('modify_page'))
