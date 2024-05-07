@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>教学工作量采集与分析系统</title>
+		<link rel="stylesheet" type="text/css" href="static\css\file_upload.css">
+		<script src="static/script/script.js"></script>
+	</head>
+<body>
+<div class="container">
+<!--导航栏 -->
+<div class="box">
+	<ul class="ulList">
+		<li class="liList">
+			<p onclick="gotoHome()">首页</p>
+		</li>
+		<li class="liList">
+			<p onclick="goTofilePage()">教师工作量采集</p>
+		</li>
+		<li class="liList">
+			<p onclick="goToanalysePage()">教师工作量分析</p>
+		</li>
+		<li class="liList">
+			<p onclick="goTomodifyPage()">教师工作量修改</p>
+		</li>
+	</ul>
+</div>
+	<div class="content">
+		<!--个人设置-->
+		<div class="Top">
+			<ul class="right_menu">
+				<li>登出</li>
+				<li>个人设置</li>
+			</ul>
+		</div>
+		<!--主要显示内容-->
+		<div class="Main_content">
+            <h1>上传文件</h1>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit" value="Upload">
+            </form>
+		</div>
+	</div>
+</body>
+</html>
