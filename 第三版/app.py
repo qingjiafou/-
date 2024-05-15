@@ -4,7 +4,7 @@ import mysql.connector
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
-from model import CompetitionAward, DepartmentInternship,  \
+from model import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
     UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking
 from database import db
@@ -23,7 +23,6 @@ class Config(object):
     SQLALCHEMY_COMMIT_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-
     # 查询时会显示原始SQL语句
     SQLALCHEMY_ECHO = True
 
@@ -33,7 +32,6 @@ app.config.from_object(Config)
 
 # 创建数据库sqlalchemy工具对象
 db.init_app(app)
-
 
 # 定义上传文件的保存目录
 UPLOAD_FOLDER = 'uploads'
@@ -110,64 +108,74 @@ def modify_page():
         return render_template('modify_page.html')
     elif worksheet == "undergraduate_workload_course_ranking":
         table_name = "本科工作量课程排序表"
-        result = UndergraduateWorkloadCourseRanking.query.filter_by(teacher_id=teacher_id,
-                                                                       teacher_name=teacher_name).all()
+        results = UndergraduateWorkloadCourseRanking.query.filter_by(teacher_id=teacher_id,
+                                                                     teacher_name=teacher_name).all()
+        result = [record.UndergraduateWorkloadCourseRanking_list() for record in results]
         columns = ["学年", "学期", "自然年", "上下半年", "课程号", "教学班", "课程名称", "教工号", "教师名称",
                    "研讨学时", "授课学时", "实验学时", "选课人数", "学生数量权重系数B", "课程类型系数A",
                    "理论课总学时P1", "实验分组数", "实验课系数", "实验课总学时P2", "课程拆分占比（工程中心用）",
                    "本科课程总学时", "课程总学时"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "undergraduate_thesis":
         table_name = "毕业论文"
-        result = UndergraduateThesi.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = UndergraduateThesi.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.UndergraduateThesi_list() for record in results]
         columns = ["学生姓名", "学生学号", "学院", "专业", "专业号", "年级", "毕业论文题目", "毕业论文成绩",
                    "毕业论文指导老师", "毕业论文指导老师工号"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "department_internship":
         table_name = "本科实习"
-        result = DepartmentInternship.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = DepartmentInternship.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.DepartmentInternship_list() for record in results]
         columns = ["学生姓名", "学生学号", "专业", "年级", "学部内实习指导教师", "学部内实习指导教师工号"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "competition_awards":
         table_name = "学生竞赛"
-        result = CompetitionAward.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = CompetitionAward.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.CompetitionAward_list() for record in results]
         columns = ["序号", "赛事名称", "作品名称", "获奖类别", "获奖等级", "指导教师", "指导教师工号", "总工作量",
                    "获奖年份"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "student_research":
         table_name = "学生科研"
-        result = StudentResearch.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = StudentResearch.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.StudentResearch_list() for record in results]
         columns = ["序号", "项目名称", "级别", "负责人", "学号", "项目组总人数", "指导老师", "指导老师工号", "验收结果",
                    "工作量"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "undergraduate_mentorship_system":
         table_name = "本科生导师制"
-        result = UndergraduateMentorshipSystem.query.filter_by(teacher_id=teacher_id,
-                                                                    teacher_name=teacher_name).all()
+        results = UndergraduateMentorshipSystem.query.filter_by(teacher_id=teacher_id,
+                                                                teacher_name=teacher_name).all()
+        result = [record.UndergraduateMentorshipSystem_list() for record in results]
         columns = ["导师姓名", "教工号", "学生姓名", "年级", "学号", "教师工作量"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "educational_research_project":
         table_name = "教研项目"
-        result = EducationalResearchProject.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
-        columns = ["序号，主键", "项目名称", "项目负责人", "项目成员", "级别", "立项时间", "结项时间", "验收结论",
+        results = EducationalResearchProject.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.EducationalResearchProject_list() for record in results]
+        columns = ["序号", "项目名称", "项目负责人", "项目成员", "级别", "立项时间", "结项时间", "验收结论",
                    "教师姓名", "工号", "教研项目工作量"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "first_class_courses":
         table_name = "一流课程"
-        result = FirstClassCourse.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = FirstClassCourse.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.FirstClassCourse_list() for record in results]
         columns = ["序号", "课程性质", "内容", "负责人", "备注", "教师姓名", "工号", "一流课程工作量"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "teaching_achievement_awards":
         table_name = "教学成果奖"
-        result = TeachingAchievementAward.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = TeachingAchievementAward.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.TeachingAchievementAward_list() for record in results]
         columns = ["序号", "届", "时间", "推荐成果名称", "成果主要完成人名称", "获奖类别", "获奖等级", "备注", "教师",
                    "工号", "教学成果工作量"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "public_services":
         table_name = "公共服务"
-        result = PublicService.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        results = PublicService.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
+        result = [record.PublicService_list() for record in results]
         columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号"]
-        return render_template('modify_page.html', table_name=table_name, columns=columns)
+        return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     return render_template('modify_page.html')
 
 
@@ -176,50 +184,161 @@ def update():
     if request.method == 'POST':
         # 获取前端发送的 JSON 数据
         json_data = request.get_json()
-
         if json_data:
             table_name = json_data["表名"]
             if table_name == "本科工作量课程排序表":
-                sql = "UPDATE undergraduate_workload_course_ranking SET academic_year = '{0}', semester = '{1}', calendar_year = '{2}', half_year = '{3}', course_name = '{4}', seminar_hours = '{5}', lecture_hours = '{6}', lab_hours = '{7}', enrolled_students = '{8}', student_weight_coefficient_b = '{9}', course_type_coefficient_a = '{10}', total_lecture_hours_p1 = '{11}', lab_group_count = '{12}', lab_coefficient = '{13}', total_lab_hours_p2 = '{14}', course_split_ratio_for_engineering_center = '{15}', total_undergraduate_course_hours = '{16}', total_course_hours = '{17}', teacher_id = '{18}', teacher_name = '{19}' WHERE course_code = '{20}' AND teaching_class = '{21}'".format(
-                    json_data["学年"],
-                    json_data["学期"],
-                    json_data["自然年"],
-                    json_data["上下半年"],
-                    json_data["课程名称"],
-                    json_data["研讨学时"],
-                    json_data["授课学时"],
-                    json_data["实验学时"],
-                    json_data["选课人数"],
-                    json_data["学生数量权重系数B"],
-                    json_data["课程类型系数A"],
-                    json_data["理论课总学时P1"],
-                    json_data["实验分组数"],
-                    json_data["实验课系数"],
-                    json_data["实验课总学时P2"],
-                    json_data["课程拆分占比（工程中心用）"],
-                    json_data["本科课程总学时"],
-                    json_data["课程总学时"],
-                    json_data["教工号"],
-                    json_data["教师名称"],
-                    json_data["课程号"],
-                    json_data["教学班"]
-                )
-                # db_exec(sql)
+                new_workload_course_ranking = \
+                    UndergraduateWorkloadCourseRanking.query.filter_by(course_code=json_data["课程号"],
+                                                                       teaching_class=json_data["教学班"]).first()
+                new_workload_course_ranking.academic_year = json_data["学年"]
+                new_workload_course_ranking.semester = json_data["学期"]
+                new_workload_course_ranking.calendar_year = json_data["自然年"]
+                new_workload_course_ranking.half_year = json_data["上下半年"]
+                new_workload_course_ranking.course_name = json_data["课程名称"]
+                new_workload_course_ranking.seminar_hours = json_data["研讨学时"]
+                new_workload_course_ranking.lecture_hours = json_data["授课学时"]
+                new_workload_course_ranking.lab_hours = json_data["实验学时"]
+                new_workload_course_ranking.enrolled_students = json_data["选课人数"]
+                new_workload_course_ranking.student_weight_coefficient_b = json_data["学生数量权重系数B"]
+                new_workload_course_ranking.course_type_coefficient_a = json_data["课程类型系数A"]
+                new_workload_course_ranking.total_lecture_hours_p1 = json_data["理论课总学时P1"]
+                new_workload_course_ranking.lab_group_count = json_data["实验分组数"]
+                new_workload_course_ranking.lab_coefficient = json_data["实验课系数"]
+                new_workload_course_ranking.total_lab_hours_p2 = json_data["实验课总学时P2"]
+                new_workload_course_ranking.course_split_ratio_for_engineering_center = json_data[
+                    "课程拆分占比（工程中心用）"]
+                new_workload_course_ranking.total_undergraduate_course_hours = json_data["本科课程总学时"]
+                new_workload_course_ranking.total_course_hours = json_data["课程总学时"]
+                new_workload_course_ranking.teacher_id = json_data["教工号"]
+                new_workload_course_ranking.teacher_name = json_data["教师名称"]
+                db.session.add(new_workload_course_ranking)
+                db.session.commit()
                 return redirect(url_for('modify_page'))
             elif table_name == "毕业论文":
-                sql = "update undergraduate_thesis SET student_name = '{0}',college = '{1}',major = '{2}',major_id = '{3}',grade = '{4}',thesis_topic = '{5}', thesis_grade = '{6}',teacher_name = '{7}',teacher_id = '{8}'WHERE student_id = '{9}';".format(
-                    json_data["学生姓名"],
-                    json_data["学院"],
-                    json_data["专业"],
-                    json_data["专业号"],
-                    json_data["年级"],
-                    json_data["毕业论文题目"],
-                    json_data["毕业论文成绩"],
-                    json_data["毕业论文指导老师"],
-                    json_data["毕业论文指导老师工号"],
-                    json_data["学生学号"]
-                )
-                #   db_exec(sql)
+                new_undergraduate_thesis = UndergraduateThesi.query.filter_by(student_id=json_data["学生学号"]).first()
+                new_undergraduate_thesis.student_name = json_data["学生姓名"]
+                new_undergraduate_thesis.college = json_data["学院"]
+                new_undergraduate_thesis.major = json_data["专业"]
+                new_undergraduate_thesis.major_id = json_data["专业号"]
+                new_undergraduate_thesis.grade = json_data["年级"]
+                new_undergraduate_thesis.thesis_topic = json_data["毕业论文题目"]
+                new_undergraduate_thesis.thesis_grade = json_data["毕业论文成绩"]
+                new_undergraduate_thesis.teacher_name = json_data["毕业论文指导老师"]
+                new_undergraduate_thesis.teacher_id = json_data["毕业论文指导老师工号"]
+                db.session.add(new_undergraduate_thesis)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "本科实习":
+                new_departmentInternship = DepartmentInternship.query.filter_by(
+                    student_id=json_data["学生学号"]).first()
+                new_departmentInternship.student_name = json_data["学生姓名"]
+                new_departmentInternship.major = json_data["专业"]
+                new_departmentInternship.grade = json_data["年级"]
+                new_departmentInternship.teacher_name = json_data["学部内实习指导教师"]
+                new_departmentInternship.teacher_id = json_data["学部内实习指导教师工号"]
+                db.session.add(new_departmentInternship)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "学生竞赛":
+                # columns = ["序号", "赛事名称", "作品名称", "获奖类别", "获奖等级", "指导教师", "指导教师工号", "总工作量","获奖年份"]
+                new_competitionAward = CompetitionAward.query.filter_by(id=json_data["序号"]).first()
+                new_competitionAward.event_name = json_data["赛事名称"]
+                new_competitionAward.work_name = json_data["作品名称"]
+                new_competitionAward.award_category = json_data["获奖类别"]
+                new_competitionAward.award_level = json_data["获奖等级"]
+                new_competitionAward.teacher_name = json_data["指导教师"]
+                new_competitionAward.teacher_id = json_data["指导教师工号"]
+                new_competitionAward.total_workload = json_data["总工作量"]
+                new_competitionAward.award_year = json_data["获奖年份"]
+                db.session.add(new_competitionAward)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "学生科研":
+                # columns = ["序号", "项目名称", "级别", "负责人", "学号", "项目组总人数", "指导老师", "指导老师工号", "验收结果","工作量"]
+                new_StudentResearch = StudentResearch.query.filter_by(id=json_data["序号"]).first()
+                new_StudentResearch.project_name = json_data["项目名称"]
+                new_StudentResearch.project_level = json_data["级别"]
+                new_StudentResearch.leader = json_data["负责人"]
+                new_StudentResearch.student_id = json_data["学号"]
+                new_StudentResearch.total_members = json_data["项目组总人数"]
+                new_StudentResearch.teacher_name = json_data["指导老师"]
+                new_StudentResearch.teacher_id = json_data["指导老师工号"]
+                new_StudentResearch.acceptance_result = json_data["验收结果"]
+                new_StudentResearch.workload = json_data["工作量"]
+                db.session.add(new_StudentResearch)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "本科生导师制":
+                # columns = ["导师姓名", "教工号", "学生姓名", "年级", "学号", "教师工作量"]
+                new_UndergraduateMentorshipSystem = UndergraduateMentorshipSystem.query.filter_by(
+                    student_id=json_data["学号"]).first()
+                new_UndergraduateMentorshipSystem.teacher_name = json_data["导师姓名"]
+                new_UndergraduateMentorshipSystem.teacher_id = json_data["教工号"]
+                new_UndergraduateMentorshipSystem.student_name = json_data["学生姓名"]
+                new_UndergraduateMentorshipSystem.grade = json_data["年级"]
+                new_UndergraduateMentorshipSystem.teacher_workload = json_data["教师工作量"]
+                db.session.add(new_UndergraduateMentorshipSystem)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "教研项目":
+                # columns = ["序号", "项目名称", "项目负责人", "项目成员", "级别", "立项时间", "结项时间", "验收结论",
+                #                    "教师姓名", "工号", "教研项目工作量"]
+                new_EducationalResearchProject = EducationalResearchProject.query.filter_by(
+                    id=json_data["序号"]).first()
+                new_EducationalResearchProject.project_name = json_data["项目名称"]
+                new_EducationalResearchProject.project_leader = json_data["项目负责人"]
+                new_EducationalResearchProject.project_members = json_data["项目成员"]
+                new_EducationalResearchProject.project_level = json_data["级别"]
+                new_EducationalResearchProject.start_date = json_data["立项时间"]
+                new_EducationalResearchProject.end_date = json_data["结项时间"]
+                new_EducationalResearchProject.acceptance_result = json_data["验收结论"]
+                new_EducationalResearchProject.teacher_name = json_data["教师姓名"]
+                new_EducationalResearchProject.teacher_id = json_data["工号"]
+                new_EducationalResearchProject.research_project_workload = json_data["教研项目工作量"]
+                db.session.add(new_EducationalResearchProject)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "一流课程":
+                # columns = ["序号", "课程性质", "内容", "负责人", "备注", "教师姓名", "工号", "一流课程工作量"]
+                new_FirstClassCourse = FirstClassCourse.query.filter_by(id=json_data["序号"]).first()
+                new_FirstClassCourse.course_type = json_data["课程性质"]
+                new_FirstClassCourse.content = json_data["内容"]
+                new_FirstClassCourse.leader = json_data["负责人"]
+                new_FirstClassCourse.remark = json_data["备注"]
+                new_FirstClassCourse.teacher_name = json_data["教师姓名"]
+                new_FirstClassCourse.teacher_id = json_data["工号"]
+                new_FirstClassCourse.first_class_course_workload = json_data["一流课程工作量"]
+                db.session.add(new_FirstClassCourse)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "教学成果奖":
+                # columns = ["序号", "届", "时间", "推荐成果名称", "成果主要完成人名称", "获奖类别", "获奖等级", "备注", "教师",
+                #   "工号", "教学成果工作量"]
+                new_TeachingAchievementAward = TeachingAchievementAward.query.filter_by(id=json_data["序号"])
+                new_TeachingAchievementAward.student_session = json_data["届"]
+                new_TeachingAchievementAward.student_date = json_data["时间"]
+                new_TeachingAchievementAward.recommended_achievement_name = json_data["推荐成果名称"]
+                new_TeachingAchievementAward.main_completion_person_name = json_data["成果主要完成人名称"]
+                new_TeachingAchievementAward.award_category = json_data["获奖类别"]
+                new_TeachingAchievementAward.award_level = json_data["获奖等级"]
+                new_TeachingAchievementAward.remark = json_data["备注"]
+                new_TeachingAchievementAward.teacher_name = json_data["教师"]
+                new_TeachingAchievementAward.teacher_id = json_data["工号"]
+                new_TeachingAchievementAward.teaching_achievement_workload = json_data["教学成果工作量"]
+                db.session.add(new_TeachingAchievementAward)
+                db.session.commit()
+                return redirect(url_for('modify_page'))
+            elif table_name == "公共服务":
+                # columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号"]
+                new_PublicService = PublicService.query.filter_by(id=json_data["序号"])
+                new_PublicService.serve_date = json_data["日期"]
+                new_PublicService.content = json_data["内容"]
+                new_PublicService.teacher_name = json_data["姓名"]
+                new_PublicService.work_duration = json_data["工作时长"]
+                new_PublicService.class_hours = json_data["课时"]
+                new_PublicService.teacher_id = json_data["教师工号"]
+                db.session.add(new_PublicService)
+                db.session.add()
                 return redirect(url_for('modify_page'))
         else:
             print("NO DATA")

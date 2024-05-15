@@ -21,6 +21,25 @@ class CompetitionAward(db.Model):
                               primaryjoin='CompetitionAward.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='competition_awards')
 
+    def CompetitionAward_list(self):
+        return [self.id, self.event_name, self.work_name, self.award_category, self.award_level, self.teacher_name,
+                self.teacher_id, self.total_workload, self.award_year]
+
+    def add_competition_award(self, event_name, work_name, award_category, award_level, teacher_name, teacher_id,
+                              total_workload, award_year):
+        new_award = CompetitionAward(
+            event_name=event_name,
+            work_name=work_name,
+            award_category=award_category,
+            award_level=award_level,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            total_workload=total_workload,
+            award_year=award_year
+        )
+        db.session.add(new_award)
+        db.session.commit()
+
 
 class DepartmentInternship(db.Model):
     __tablename__ = 'department_internship'
@@ -30,12 +49,28 @@ class DepartmentInternship(db.Model):
     major = db.Column(db.String(24), info='专业')
     grade = db.Column(db.String(24), info='年级')
     teacher_name = db.Column(db.String(24), info='学部内实习指导教师')
-    teacher_id = db.Column(db.String(24),db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+                           index=True,
                            info='学部内实习指导教师工号')
 
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='DepartmentInternship.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='department_internships')
+
+    def DepartmentInternship_list(self):
+        return [self.student_name, self.student_id, self.major, self.grade, self.teacher_name, self.teacher_id]
+
+    def add_internship_record(self, student_name, student_id, major, grade, teacher_name, teacher_id):
+        new_internship = DepartmentInternship(
+            student_name=student_name,
+            student_id=student_id,
+            major=major,
+            grade=grade,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id
+        )
+        db.session.add(new_internship)
+        db.session.commit()
 
 
 class EducationalResearchProject(db.Model):
@@ -50,12 +85,37 @@ class EducationalResearchProject(db.Model):
     end_date = db.Column(db.Date, info='结项时间')
     acceptance_result = db.Column(db.String(24), info='验收结论')
     teacher_name = db.Column(db.String(24), info='教师姓名')
-    teacher_id = db.Column(db.String(24),db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True, info='工号')
+    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+                           index=True, info='工号')
     research_project_workload = db.Column(db.Float(precision=6, asdecimal=True), info='教研项目工作量')
 
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='EducationalResearchProject.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='educational_research_projects')
+
+    def EducationalResearchProject_list(self):
+        return [
+            self.id,
+            self.project_name, self.project_leader, self.project_members, self.project_level, self.start_date,
+            self.end_date, self.acceptance_result, self.teacher_name, self.teacher_id, self.research_project_workload
+        ]
+
+    def add_research_project(self, project_name, project_leader, project_members, project_level, start_date, end_date,
+                             acceptance_result, teacher_name, teacher_id, research_project_workload):
+        new_project = EducationalResearchProject(
+            project_name=project_name,
+            project_leader=project_leader,
+            project_members=project_members,
+            project_level=project_level,
+            start_date=start_date,
+            end_date=end_date,
+            acceptance_result=acceptance_result,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            research_project_workload=research_project_workload
+        )
+        db.session.add(new_project)
+        db.session.commit()
 
 
 class FirstClassCourse(db.Model):
@@ -67,13 +127,40 @@ class FirstClassCourse(db.Model):
     leader = db.Column(db.String(24), info='负责人')
     remark = db.Column(db.String(24), info='备注，工作量分配')
     teacher_name = db.Column(db.String(24), info='教师姓名，一位老师一个记录')
-    teacher_id = db.Column(db.String(24),db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+                           index=True,
                            info='工号，外键')
     first_class_course_workload = db.Column(db.Float(precision=6, asdecimal=True), info='一流课程工作量')
 
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='FirstClassCourse.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='first_class_courses')
+
+    def FirstClassCourse_list(self):
+        return [
+            self.id,
+            self.course_type,
+            self.content,
+            self.leader,
+            self.remark,
+            self.teacher_name,
+            self.teacher_id,
+            self.first_class_course_workload,
+        ]
+
+    def add_first_class_course(self, course_type, content, leader, remark, teacher_name, teacher_id,
+                               first_class_course_workload):
+        new_course = FirstClassCourse(
+            course_type=course_type,
+            content=content,
+            leader=leader,
+            remark=remark,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            first_class_course_workload=first_class_course_workload
+        )
+        db.session.add(new_course)
+        db.session.commit()
 
 
 class PublicService(db.Model):
@@ -85,12 +172,36 @@ class PublicService(db.Model):
     teacher_name = db.Column(db.String(24), info='姓名')
     work_duration = db.Column(db.Float(precision=6, asdecimal=True), info='工作时长')
     class_hours = db.Column(db.Float(precision=6, asdecimal=True), info='课时')
-    teacher_id = db.Column(db.String(24),db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+                           index=True,
                            info='教师工号，外键')
 
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='PublicService.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='public_services')
+
+    def PublicService_list(self):
+        return [
+            self.id,
+            self.serve_date,
+            self.content,
+            self.teacher_name,
+            self.work_duration,
+            self.class_hours,
+            self.teacher_id
+        ]
+
+    def add_public_service_record(self, serve_date, content, teacher_name, work_duration, class_hours, teacher_id):
+        new_record = PublicService(
+            serve_date=serve_date,
+            content=content,
+            teacher_name=teacher_name,
+            work_duration=work_duration,
+            class_hours=class_hours,
+            teacher_id=teacher_id
+        )
+        db.session.add(new_record)
+        db.session.commit()
 
 
 class StudentResearch(db.Model):
@@ -111,6 +222,30 @@ class StudentResearch(db.Model):
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='StudentResearch.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='student_researches')
+
+    def StudentResearch_list(self):
+        return [
+            self.id, self.project_name, self.project_level,
+            self.leader, self.student_id, self.total_members,
+            self.teacher_name, self.teacher_id, self.acceptance_result,
+            self.workload
+        ]
+
+    def add_student_research_record(self, project_name, project_level, leader, student_id, total_members, teacher_name,
+                                    teacher_id, acceptance_result, workload):
+        new_record = StudentResearch(
+            project_name=project_name,
+            project_level=project_level,
+            leader=leader,
+            student_id=student_id,
+            total_members=total_members,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            acceptance_result=acceptance_result,
+            workload=workload
+        )
+        db.session.add(new_record)
+        db.session.commit()
 
 
 class TeachingAchievementAward(db.Model):
@@ -133,6 +268,32 @@ class TeachingAchievementAward(db.Model):
                               primaryjoin='TeachingAchievementAward.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='teaching_achievement_awards')
 
+    def TeachingAchievementAward_list(self):
+        return [
+            self.id, self.student_session, self.student_date,
+            self.recommended_achievement_name, self.main_completion_person_name,
+            self.award_category, self.award_level, self.remark,
+            self.teacher_name, self.teacher_id, self.teaching_achievement_workload
+        ]
+
+    def add_teaching_achievement_record(self, student_session, student_date, recommended_achievement_name,
+                                        main_completion_person_name, award_category, award_level, remark, teacher_name,
+                                        teacher_id, teaching_achievement_workload):
+        new_record = TeachingAchievementAward(
+            student_session=student_session,
+            student_date=student_date,
+            recommended_achievement_name=recommended_achievement_name,
+            main_completion_person_name=main_completion_person_name,
+            award_category=award_category,
+            award_level=award_level,
+            remark=remark,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            teaching_achievement_workload=teaching_achievement_workload
+        )
+        db.session.add(new_record)
+        db.session.commit()
+
 
 class UndergraduateMentorshipSystem(db.Model):
     __tablename__ = 'undergraduate_mentorship_system'
@@ -148,6 +309,24 @@ class UndergraduateMentorshipSystem(db.Model):
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='UndergraduateMentorshipSystem.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='undergraduate_mentorship_systems')
+
+    def UndergraduateMentorshipSystem_list(self):
+        return [
+            self.teacher_name, self.teacher_id, self.student_name,
+            self.grade, self.student_id, self.teacher_workload
+        ]
+
+    def add_mentorship_record(self, teacher_name, teacher_id, student_name, grade, student_id, teacher_workload):
+        new_record = UndergraduateMentorshipSystem(
+            teacher_name=teacher_name,
+            teacher_id=teacher_id,
+            student_name=student_name,
+            grade=grade,
+            student_id=student_id,
+            teacher_workload=teacher_workload
+        )
+        db.session.add(new_record)
+        db.session.commit()
 
 
 class UndergraduateThesi(db.Model):
@@ -169,6 +348,29 @@ class UndergraduateThesi(db.Model):
                               primaryjoin='UndergraduateThesi.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='undergraduate_thesis')
 
+    def UndergraduateThesi_list(self):
+        return [
+            self.student_name, self.student_id, self.college, self.major, self.major_id,
+            self.grade, self.thesis_topic, self.thesis_grade, self.teacher_name, self.teacher_id
+        ]
+
+    def add_thesis_record(self, student_name, student_id, college, major, major_id, grade, thesis_topic, thesis_grade,
+                          teacher_name, teacher_id):
+        new_record = UndergraduateThesi(
+            student_name=student_name,
+            student_id=student_id,
+            college=college,
+            major=major,
+            major_id=major_id,
+            grade=grade,
+            thesis_topic=thesis_topic,
+            thesis_grade=thesis_grade,
+            teacher_name=teacher_name,
+            teacher_id=teacher_id
+        )
+        db.session.add(new_record)
+        db.session.commit()
+
 
 class UndergraduateWorkloadCourseRanking(db.Model):
     __tablename__ = 'undergraduate_workload_course_ranking'
@@ -181,7 +383,8 @@ class UndergraduateWorkloadCourseRanking(db.Model):
     course_code = db.Column(db.String(24), primary_key=True, nullable=False, info='课程号')
     teaching_class = db.Column(db.String(24), primary_key=True, nullable=False, info='教学班')
     course_name = db.Column(db.String(50), info='课程名称')  # 调整长度
-    teacher_id = db.Column(db.String(20), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True, info='教工号')  # 调整长度
+    teacher_id = db.Column(db.String(20), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+                           index=True, info='教工号')  # 调整长度
     teacher_name = db.Column(db.String(30), info='教师名称')  # 调整长度
     seminar_hours = db.Column(db.Float, info='研讨学时')  # 调整类型为Float
     lecture_hours = db.Column(db.Float, info='授课学时')  # 调整类型为Float
@@ -201,6 +404,49 @@ class UndergraduateWorkloadCourseRanking(db.Model):
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='UndergraduateWorkloadCourseRanking.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='undergraduate_workload_course_rankings')
+
+    def UndergraduateWorkloadCourseRanking_list(self):
+        return [
+            self.academic_year, self.semester, self.calendar_year, self.half_year, self.course_code,
+            self.teaching_class, self.course_name, self.teacher_id, self.teacher_name, self.seminar_hours,
+            self.lecture_hours, self.lab_hours, self.enrolled_students, self.student_weight_coefficient_b,
+            self.course_type_coefficient_a, self.total_lecture_hours_p1, self.lab_group_count, self.lab_coefficient,
+            self.total_lab_hours_p2, self.course_split_ratio_for_engineering_center,
+            self.total_undergraduate_course_hours, self.total_course_hours
+        ]
+
+    def add_course_ranking(self, academic_year, semester, calendar_year, half_year, course_code, teaching_class,
+                           course_name, teacher_id, teacher_name, seminar_hours, lecture_hours, lab_hours,
+                           enrolled_students, student_weight_coefficient_b, course_type_coefficient_a,
+                           total_lecture_hours_p1, lab_group_count, lab_coefficient, total_lab_hours_p2,
+                           course_split_ratio_for_engineering_center, total_undergraduate_course_hours,
+                           total_course_hours):
+        new_course_ranking = UndergraduateWorkloadCourseRanking(
+            academic_year=academic_year,
+            semester=semester,
+            calendar_year=calendar_year,
+            half_year=half_year,
+            course_code=course_code,
+            teaching_class=teaching_class,
+            course_name=course_name,
+            teacher_id=teacher_id,
+            teacher_name=teacher_name,
+            seminar_hours=seminar_hours,
+            lecture_hours=lecture_hours,
+            lab_hours=lab_hours,
+            enrolled_students=enrolled_students,
+            student_weight_coefficient_b=student_weight_coefficient_b,
+            course_type_coefficient_a=course_type_coefficient_a,
+            total_lecture_hours_p1=total_lecture_hours_p1,
+            lab_group_count=lab_group_count,
+            lab_coefficient=lab_coefficient,
+            total_lab_hours_p2=total_lab_hours_p2,
+            course_split_ratio_for_engineering_center=course_split_ratio_for_engineering_center,
+            total_undergraduate_course_hours=total_undergraduate_course_hours,
+            total_course_hours=total_course_hours
+        )
+        db.session.add(new_course_ranking)
+        db.session.commit()
 
 
 class UndergraduateWorkloadTeacherRanking(db.Model):
@@ -223,3 +469,44 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
     first_class_course = db.Column(db.Double(6, True), info='一流课程')
     teaching_achievement_award = db.Column(db.Double(6, True), info='教学成果奖')
     public_service = db.Column(db.Double(6, True), info='公共服务')
+
+    def UndergraduateWorkloadTeacherRanking_list(self):
+        return [
+            self.teacher_id, self.teacher_name,
+            self.undergraduate_course_total_hours, self.total_course_hours,
+            self.graduation_thesis_student_count, self.graduation_thesis_p,
+            self.teaching_internship_student_count, self.teaching_internship_weeks,
+            self.teaching_internship_p, self.responsible_internship_construction_management_p,
+            self.guiding_undergraduate_competition_p, self.guiding_undergraduate_research_p,
+            self.undergraduate_tutor_system, self.teaching_research_and_reform_p,
+            self.first_class_course, self.teaching_achievement_award, self.public_service
+        ]
+
+    def add_teacher_ranking(self, teacher_id, teacher_name, undergraduate_course_total_hours, total_course_hours,
+                            graduation_thesis_student_count, graduation_thesis_p, teaching_internship_student_count,
+                            teaching_internship_weeks, teaching_internship_p,
+                            responsible_internship_construction_management_p, guiding_undergraduate_competition_p,
+                            guiding_undergraduate_research_p, undergraduate_tutor_system,
+                            teaching_research_and_reform_p, first_class_course, teaching_achievement_award,
+                            public_service):
+        new_teacher_ranking = UndergraduateWorkloadTeacherRanking(
+            teacher_id=teacher_id,
+            teacher_name=teacher_name,
+            undergraduate_course_total_hours=undergraduate_course_total_hours,
+            total_course_hours=total_course_hours,
+            graduation_thesis_student_count=graduation_thesis_student_count,
+            graduation_thesis_p=graduation_thesis_p,
+            teaching_internship_student_count=teaching_internship_student_count,
+            teaching_internship_weeks=teaching_internship_weeks,
+            teaching_internship_p=teaching_internship_p,
+            responsible_internship_construction_management_p=responsible_internship_construction_management_p,
+            guiding_undergraduate_competition_p=guiding_undergraduate_competition_p,
+            guiding_undergraduate_research_p=guiding_undergraduate_research_p,
+            undergraduate_tutor_system=undergraduate_tutor_system,
+            teaching_research_and_reform_p=teaching_research_and_reform_p,
+            first_class_course=first_class_course,
+            teaching_achievement_award=teaching_achievement_award,
+            public_service=public_service
+        )
+        db.session.add(new_teacher_ranking)
+        db.session.commit()
