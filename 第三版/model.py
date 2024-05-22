@@ -1,7 +1,7 @@
 # coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
 from database import db
-from sqlalchemy import event
+from sqlalchemy import event, func
 from sqlalchemy.orm import Session
 
 
@@ -509,18 +509,25 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
         db.session.add(new_teacher_ranking)
         db.session.commit()
 
-
+#触发器
 def update_guiding_undergraduate_competition_p(mapper, connection, target):
     session = Session(bind=connection)
     teacher = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
     teacher.guiding_undergraduate_competition_p = target.total_workload
     session.commit()
 
+
 def update_undergraduate_course_total_hours(mapper, connection, target):
     session = Session(bind=connection)
-    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id)
-   # course.undergraduate_course_total_hours=
-
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.total_course_hours)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
     session.commit()
+
+
 db.event.listen(CompetitionAward, 'after_insert', update_guiding_undergraduate_competition_p)
 db.event.listen(CompetitionAward, 'after_update', update_guiding_undergraduate_competition_p)
+db.event.listen(UndergraduateWorkloadCourseRanking, 'after_update', update_undergraduate_course_total_hours)
+db.event.listen(UndergraduateWorkloadCourseRanking, 'after_update', update_undergraduate_course_total_hours)

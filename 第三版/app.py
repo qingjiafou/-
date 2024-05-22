@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_migrate import Migrate
 import pymysql
 import mysql.connector
 from flask_sqlalchemy import SQLAlchemy
@@ -11,6 +12,7 @@ from model import CompetitionAward, DepartmentInternship, \
 from database import db
 
 app = Flask(__name__)
+Migrate(app, db)
 
 
 class Config(object):
