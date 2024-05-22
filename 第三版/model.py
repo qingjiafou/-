@@ -1,6 +1,8 @@
 # coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
 from database import db
+from sqlalchemy import event
+from sqlalchemy.orm import Session
 
 
 class CompetitionAward(db.Model):
@@ -397,7 +399,6 @@ class UndergraduateWorkloadCourseRanking(db.Model):
     lab_coefficient = db.Column(db.Float, info='实验课系数')  # 调整类型为Float
     total_lab_hours_p2 = db.Column(db.Float, info='实验课总学时P2')  # 调整类型为Float
     course_split_ratio_for_engineering_center = db.Column(db.Float, info='课程拆分占比（工程中心用）')  # 调整类型为Float
-    total_undergraduate_course_hours = db.Column(db.Float, info='本科课程总学时')  # 调整类型为Float
     total_course_hours = db.Column(db.Float, info='课程总学时')  # 调整类型为Float
 
     # 修改外键关系设置
@@ -412,14 +413,14 @@ class UndergraduateWorkloadCourseRanking(db.Model):
             self.lecture_hours, self.lab_hours, self.enrolled_students, self.student_weight_coefficient_b,
             self.course_type_coefficient_a, self.total_lecture_hours_p1, self.lab_group_count, self.lab_coefficient,
             self.total_lab_hours_p2, self.course_split_ratio_for_engineering_center,
-            self.total_undergraduate_course_hours, self.total_course_hours
+            self.total_course_hours
         ]
 
     def add_course_ranking(self, academic_year, semester, calendar_year, half_year, course_code, teaching_class,
                            course_name, teacher_id, teacher_name, seminar_hours, lecture_hours, lab_hours,
                            enrolled_students, student_weight_coefficient_b, course_type_coefficient_a,
                            total_lecture_hours_p1, lab_group_count, lab_coefficient, total_lab_hours_p2,
-                           course_split_ratio_for_engineering_center, total_undergraduate_course_hours,
+                           course_split_ratio_for_engineering_center,
                            total_course_hours):
         new_course_ranking = UndergraduateWorkloadCourseRanking(
             academic_year=academic_year,
@@ -442,7 +443,6 @@ class UndergraduateWorkloadCourseRanking(db.Model):
             lab_coefficient=lab_coefficient,
             total_lab_hours_p2=total_lab_hours_p2,
             course_split_ratio_for_engineering_center=course_split_ratio_for_engineering_center,
-            total_undergraduate_course_hours=total_undergraduate_course_hours,
             total_course_hours=total_course_hours
         )
         db.session.add(new_course_ranking)
@@ -454,26 +454,25 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
 
     teacher_id = db.Column(db.String(56), primary_key=True, info='教工号')
     teacher_name = db.Column(db.String(12), info='教师名称')
-    undergraduate_course_total_hours = db.Column(db.Double(6, True), info='本科课程总学时')
-    total_course_hours = db.Column(db.Double(6, True), info='课程总学时')
+    undergraduate_course_total_hours = db.Column(db.Float, info='本科课程总学时')
     graduation_thesis_student_count = db.Column(db.Integer, info='毕业论文学生人数')
-    graduation_thesis_p = db.Column(db.Double(6, True), info='毕业论文P')
+    graduation_thesis_p = db.Column(db.Float, info='毕业论文P')
     teaching_internship_student_count = db.Column(db.Integer, info='指导教学实习人数')
     teaching_internship_weeks = db.Column(db.Integer, info='指导教学实习周数')
-    teaching_internship_p = db.Column(db.Double(6, True), info='指导教学实习P')
-    responsible_internship_construction_management_p = db.Column(db.Double(6, True), info='负责实习点建设与管理P')
-    guiding_undergraduate_competition_p = db.Column(db.Double(6, True), info='指导本科生竞赛P')
-    guiding_undergraduate_research_p = db.Column(db.Double(6, True), info='指导本科生科研P')
-    undergraduate_tutor_system = db.Column(db.Double(6, True), info='本科生导师制')
-    teaching_research_and_reform_p = db.Column(db.Double(6, True), info='教研教改P')
-    first_class_course = db.Column(db.Double(6, True), info='一流课程')
-    teaching_achievement_award = db.Column(db.Double(6, True), info='教学成果奖')
-    public_service = db.Column(db.Double(6, True), info='公共服务')
+    teaching_internship_p = db.Column(db.Float, info='指导教学实习P')
+    responsible_internship_construction_management_p = db.Column(db.Float, info='负责实习点建设与管理P')
+    guiding_undergraduate_competition_p = db.Column(db.Float, info='指导本科生竞赛P')
+    guiding_undergraduate_research_p = db.Column(db.Float, info='指导本科生科研P')
+    undergraduate_tutor_system = db.Column(db.Float, info='本科生导师制')
+    teaching_research_and_reform_p = db.Column(db.Float, info='教研教改P')
+    first_class_course = db.Column(db.Float, info='一流课程')
+    teaching_achievement_award = db.Column(db.Float, info='教学成果奖')
+    public_service = db.Column(db.Float, info='公共服务')
 
     def UndergraduateWorkloadTeacherRanking_list(self):
         return [
             self.teacher_id, self.teacher_name,
-            self.undergraduate_course_total_hours, self.total_course_hours,
+            self.undergraduate_course_total_hours,
             self.graduation_thesis_student_count, self.graduation_thesis_p,
             self.teaching_internship_student_count, self.teaching_internship_weeks,
             self.teaching_internship_p, self.responsible_internship_construction_management_p,
@@ -482,7 +481,7 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
             self.first_class_course, self.teaching_achievement_award, self.public_service
         ]
 
-    def add_teacher_ranking(self, teacher_id, teacher_name, undergraduate_course_total_hours, total_course_hours,
+    def add_teacher_ranking(self, teacher_id, teacher_name, undergraduate_course_total_hours,
                             graduation_thesis_student_count, graduation_thesis_p, teaching_internship_student_count,
                             teaching_internship_weeks, teaching_internship_p,
                             responsible_internship_construction_management_p, guiding_undergraduate_competition_p,
@@ -493,7 +492,6 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
             teacher_id=teacher_id,
             teacher_name=teacher_name,
             undergraduate_course_total_hours=undergraduate_course_total_hours,
-            total_course_hours=total_course_hours,
             graduation_thesis_student_count=graduation_thesis_student_count,
             graduation_thesis_p=graduation_thesis_p,
             teaching_internship_student_count=teaching_internship_student_count,
@@ -510,3 +508,19 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
         )
         db.session.add(new_teacher_ranking)
         db.session.commit()
+
+
+def update_guiding_undergraduate_competition_p(mapper, connection, target):
+    session = Session(bind=connection)
+    teacher = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    teacher.guiding_undergraduate_competition_p = target.total_workload
+    session.commit()
+
+def update_undergraduate_course_total_hours(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id)
+   # course.undergraduate_course_total_hours=
+
+    session.commit()
+db.event.listen(CompetitionAward, 'after_insert', update_guiding_undergraduate_competition_p)
+db.event.listen(CompetitionAward, 'after_update', update_guiding_undergraduate_competition_p)

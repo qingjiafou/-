@@ -6,7 +6,7 @@
 .box {
     width: 200px;
     height: 100vh; /* 使用视窗高度作为高度单位 */
-    background-color: grey;
+    background-color: rgb(48, 65, 86);
     position: fixed;
     top: 0;
     left: 0;
@@ -20,7 +20,7 @@
 }
 
 .liList {
-    background-color: #CCCCCC;
+    background-color: rgb(48, 65, 86);
     position: relative;
 }
 
@@ -29,6 +29,7 @@
     text-align: center;
     margin: 0;
     padding: 10px 0;
+    color:white;
     cursor: pointer; /* 添加指针样式 */
 }
 
@@ -68,7 +69,7 @@
     border: 1px solid #ccc;
 }
 .Top {
-    background-color: lightblue; /* 设置背景颜色 */
+    background-color: #3c8dbc; /* 设置背景颜色 */
     padding: 30px;
 }
 .cursor-pointer {

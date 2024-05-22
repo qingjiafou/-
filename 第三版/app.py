@@ -6,7 +6,8 @@ from werkzeug.utils import secure_filename
 import os
 from model import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
-    UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking
+    UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking, \
+    UndergraduateWorkloadTeacherRanking
 from database import db
 
 app = Flask(__name__)
@@ -114,7 +115,7 @@ def modify_page():
         columns = ["学年", "学期", "自然年", "上下半年", "课程号", "教学班", "课程名称", "教工号", "教师名称",
                    "研讨学时", "授课学时", "实验学时", "选课人数", "学生数量权重系数B", "课程类型系数A",
                    "理论课总学时P1", "实验分组数", "实验课系数", "实验课总学时P2", "课程拆分占比（工程中心用）",
-                   "本科课程总学时", "课程总学时"]
+                   "课程总学时"]
         return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "undergraduate_thesis":
         table_name = "毕业论文"
@@ -207,7 +208,6 @@ def update():
                 new_workload_course_ranking.total_lab_hours_p2 = json_data["实验课总学时P2"]
                 new_workload_course_ranking.course_split_ratio_for_engineering_center = json_data[
                     "课程拆分占比（工程中心用）"]
-                new_workload_course_ranking.total_undergraduate_course_hours = json_data["本科课程总学时"]
                 new_workload_course_ranking.total_course_hours = json_data["课程总学时"]
                 new_workload_course_ranking.teacher_id = json_data["教工号"]
                 new_workload_course_ranking.teacher_name = json_data["教师名称"]
@@ -350,14 +350,18 @@ def update():
 @app.route('/analyse_page', methods=['POST', 'GET'])
 def analyse_page():
     if request.method == 'POST':
-        teacher_id = request.form['teacher_id']
-        teacher_name = request.form['teacher_name']
-        sql = "select * from `undergraduate_workload_teacher_ranking` where teacher_id='{0}' and teacher_name='{1}'".format(
-            teacher_id, teacher_name)
-        #  result = db_query(sql)
-        return render_template('analyse_page.html', **locals())
+        teacher_id = request.form.get('teacher_id')
+        teacher_name = request.form.get('teacher_name')
+        results = UndergraduateWorkloadTeacherRanking.query.filter_by(teacher_id=teacher_id,
+                                                                      teacher_name=teacher_name).all()
+        result = [record.UndergraduateWorkloadTeacherRanking_list() for record in results]
+        columns = ["教工号", "教师名称", "本科课程总学时", "毕业论文学生人数", "毕业论文P",
+                   "指导教学实习人数", "指导教学实习周数", "指导教学实习P",
+                   "负责实习点建设与管理P", "指导本科生竞赛P", "指导本科生科研P", "本科生导师制", "教研教改P",
+                   "一流课程", "教学成果奖", "公共服务"]
+        return render_template('analyse_page.html', result=result, columns=columns)
     else:
-        return render_template('analyse_page.html', **locals())
+        return render_template('analyse_page.html')
 
 
 if __name__ == '__main__':
