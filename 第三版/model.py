@@ -54,7 +54,7 @@ class DepartmentInternship(db.Model):
     teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
                            index=True,
                            info='学部内实习指导教师工号')
-
+    week = db.Column(db.String(24), info='实习周数')
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='DepartmentInternship.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='department_internships')
@@ -177,7 +177,7 @@ class PublicService(db.Model):
     teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
                            index=True,
                            info='教师工号，外键')
-
+    workload = db.Column(db.Float, info='工作量')
     teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
                               primaryjoin='PublicService.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
                               backref='public_services')
@@ -509,25 +509,170 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
         db.session.add(new_teacher_ranking)
         db.session.commit()
 
-#触发器
-def update_guiding_undergraduate_competition_p(mapper, connection, target):
-    session = Session(bind=connection)
-    teacher = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
-    teacher.guiding_undergraduate_competition_p = target.total_workload
-    session.commit()
+
+class workload_parameter(db.Model):
+    __tablename__ = '工作量参数表'
+
+    graduation_thesis_p_count = db.Column(db.Float, info="毕业论文参数")
+    intership_count = db.Column(db.Float, info="指导实习参数")
+    intership_js = db.Column(db.Float, info="实习点建设")
+
+
+# 触发器
 
 
 def update_undergraduate_course_total_hours(mapper, connection, target):
     session = Session(bind=connection)
     course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
-    course.undergraduate_course_total_hours = undergraduate_course_total_hours = session.query(
+    course.undergraduate_course_total_hours = session.query(
         func.sum(mapper.c.total_course_hours)). \
         filter(mapper.c.teacher_id == target.teacher_id). \
         scalar()
     session.commit()
 
 
+def update_graduation_thesis_info(mapper, connection, target):
+    session = Session(bind=connection)
+    teacher_id = target.teacher_id
+
+    # 更新毕业论文学生数量
+    graduation_thesis_student_count = (
+        session.query(func.count(mapper.c.student_id))
+        .filter(mapper.c.teacher_id == teacher_id)
+        .scalar()
+    )
+
+    # 查询毕业论文工作量参数
+    graduation_thesis_p_count = session.query(workload_parameter.graduation_thesis_p_count).scalar()
+
+    # 计算毕业论文工作量
+    graduation_thesis_p = graduation_thesis_p_count * graduation_thesis_student_count
+
+    # 查询该教师的记录
+    teacher = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=teacher_id).one()
+
+    # 更新毕业论文学生数量字段
+    teacher.graduation_thesis_student_count = graduation_thesis_student_count
+
+    # 更新毕业论文工作量字段
+    teacher.graduation_thesis_p = graduation_thesis_p
+
+    session.commit()
+
+
+def update_teaching_internship_student_info(mapper, connection, target):
+    session = Session(bind=connection)
+    teacher_id = target.teacher_id
+    # 更新指导教学实习的人数
+    internship_student_count = session.query(
+        func.count(mapper.c.student_id).filter(mapper.c.teacher_id == teacher_id).scalar())
+    # 更新指导教学实习的周数
+    internship_week_count = session.query(
+        func.sum(mapper.c.week).filter(mapper.c.teacher_id == teacher_id).scalar())
+    # 查询教学实习指导的参数
+    internship_count = session.query(workload_parameter.internship_count).scalar()
+    # 查询教学实习点的建设与管理P，这个直接查表得到
+    internship_js = session.query(workload_parameter.internship_js).scalar()
+    # 更新指导教学实习P
+    teaching_internship_student_count = internship_student_count * internship_week_count * internship_count
+    # 查询该教师的记录并更新
+    teacher = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=teacher_id).one()
+    teacher.teaching_internship_student_count = internship_student_count
+    teacher.teaching_internship_weeks = internship_week_count
+    teacher.teaching_internship_p = teaching_internship_student_count
+    teacher.responsible_internship_construction_management_p = internship_js
+    session.commit()
+
+
+def update_guiding_undergraduate_competition_p(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.total_workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_guiding_undergraduate_research_p(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_undergraduate_tutor_system(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.teacher_workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_teaching_research_and_reform_p(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.research_project_workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_first_class_course(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.first_class_course_workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_teaching_achievement_award(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.teaching_achievement_workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+def update_public_service(mapper, connection, target):
+    session = Session(bind=connection)
+    course = session.query(UndergraduateWorkloadTeacherRanking).filter_by(teacher_id=target.teacher_id).one()
+    course.undergraduate_course_total_hours = session.query(
+        func.sum(mapper.c.workload)). \
+        filter(mapper.c.teacher_id == target.teacher_id). \
+        scalar()
+    session.commit()
+
+
+# 触发器监听
+db.event.listen(UndergraduateWorkloadCourseRanking, 'after_insert', update_undergraduate_course_total_hours)
+db.event.listen(UndergraduateWorkloadCourseRanking, 'after_update', update_undergraduate_course_total_hours)
+# 有几个触发器需要传递几个可变参数来计算工作量，将参数全部放在一张表里面了
+db.event.listen(UndergraduateThesi, 'after_insert', update_graduation_thesis_info)
+db.event.listen(UndergraduateThesi, 'after_update', update_graduation_thesis_info)
+db.event.listen(DepartmentInternship, 'after_insert', update_teaching_internship_student_info)
+db.event.listen(DepartmentInternship, 'after_update', update_teaching_internship_student_info)
 db.event.listen(CompetitionAward, 'after_insert', update_guiding_undergraduate_competition_p)
 db.event.listen(CompetitionAward, 'after_update', update_guiding_undergraduate_competition_p)
-db.event.listen(UndergraduateWorkloadCourseRanking, 'after_update', update_undergraduate_course_total_hours)
-db.event.listen(UndergraduateWorkloadCourseRanking, 'after_update', update_undergraduate_course_total_hours)
+db.event.listen(StudentResearch, 'after_insert', update_guiding_undergraduate_research_p)
+db.event.listen(StudentResearch, 'after_update', update_guiding_undergraduate_research_p)
+db.event.listen(UndergraduateMentorshipSystem, 'after_insert', update_undergraduate_tutor_system)
+db.event.listen(UndergraduateMentorshipSystem, 'after_update', update_undergraduate_tutor_system)
+db.event.listen(EducationalResearchProject, 'after_insert', update_teaching_research_and_reform_p)
+db.event.listen(EducationalResearchProject, 'after_update', update_teaching_research_and_reform_p)
+db.event.listen(FirstClassCourse, 'after_insert', update_first_class_course)
+db.event.listen(FirstClassCourse, 'after_update', update_first_class_course)
+db.event.listen(TeachingAchievementAward, 'after_insert', update_teaching_achievement_award)
+db.event.listen(TeachingAchievementAward, 'after_update', update_teaching_achievement_award)
+db.event.listen(PublicService, 'after_insert', update_public_service)
+db.event.listen(PublicService, 'after_update', update_public_service)

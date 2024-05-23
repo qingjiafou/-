@@ -130,7 +130,7 @@ def modify_page():
         table_name = "本科实习"
         results = DepartmentInternship.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
         result = [record.DepartmentInternship_list() for record in results]
-        columns = ["学生姓名", "学生学号", "专业", "年级", "学部内实习指导教师", "学部内实习指导教师工号"]
+        columns = ["学生姓名", "学生学号", "专业", "年级", "学部内实习指导教师", "学部内实习指导教师工号","实习周数"]
         return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "competition_awards":
         table_name = "学生竞赛"
@@ -177,7 +177,7 @@ def modify_page():
         table_name = "公共服务"
         results = PublicService.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
         result = [record.PublicService_list() for record in results]
-        columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号"]
+        columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号","工作量"]
         return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     return render_template('modify_page.html')
 
@@ -238,6 +238,7 @@ def update():
                 new_departmentInternship.grade = json_data["年级"]
                 new_departmentInternship.teacher_name = json_data["学部内实习指导教师"]
                 new_departmentInternship.teacher_id = json_data["学部内实习指导教师工号"]
+                new_departmentInternship.week = json_data["实习周数"]
                 db.session.add(new_departmentInternship)
                 db.session.commit()
                 return redirect(url_for('modify_page'))
@@ -339,6 +340,7 @@ def update():
                 new_PublicService.work_duration = json_data["工作时长"]
                 new_PublicService.class_hours = json_data["课时"]
                 new_PublicService.teacher_id = json_data["教师工号"]
+                new_PublicService.workload=json_data["工作量"]
                 db.session.add(new_PublicService)
                 db.session.add()
                 return redirect(url_for('modify_page'))
