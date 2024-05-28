@@ -513,6 +513,7 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
 class workload_parameter(db.Model):
     __tablename__ = '工作量参数表'
 
+    id=db.Column(db.Integer, primary_key=True,info="序号")
     graduation_thesis_p_count = db.Column(db.Float, info="毕业论文参数")
     intership_count = db.Column(db.Float, info="指导实习参数")
     intership_js = db.Column(db.Float, info="实习点建设")

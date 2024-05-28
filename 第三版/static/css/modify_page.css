@@ -3,6 +3,11 @@
     padding: 0;
 }
 
+.container {
+    height: 100vh;
+    width: 100vw;
+}
+
 .box {
     width: 200px;
     height: 100vh; /* 使用视窗高度作为高度单位 */
@@ -29,7 +34,7 @@
     text-align: center;
     margin: 0;
     padding: 10px 0;
-    color:white;
+    color: white;
     cursor: pointer; /* 添加指针样式 */
 }
 
@@ -49,10 +54,13 @@
     background-color: #8090f6;
     text-align: center;
 }
+
 .content {
-    flex: 1;
+    height: 100vh; /* 使用视窗高度作为高度单位 */
     margin-left: 200px; /* 导航栏宽度 */
+    background-color: #f3f3f4
 }
+
 .right_menu {
     list-style-type: none;
     padding: 0;
@@ -62,16 +70,97 @@
     right: 0;
     display: flex; /* 使用 Flex 布局使得子元素横向排列 */
 }
+
 .right_menu li {
     padding: 10px;
     margin: 5px;
     background-color: #f2f2f2;
     border: 1px solid #ccc;
 }
+
 .Top {
     background-color: #3c8dbc; /* 设置背景颜色 */
     padding: 30px;
 }
+
 .cursor-pointer {
     cursor: pointer;
 }
+
+.form-row {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.form-row p, .form-row select {
+    margin-right: 10px;
+}
+
+.form-row button {
+    margin-right: 10px;
+    background-color: #1ab394;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    font-size: 16px;
+    box-sizing: content-box;
+    border-radius: 5px;
+
+}
+.search_result button{
+    margin-top: 20px;
+    margin-left: 20px;
+    background-color: #f8ac59;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    font-size: 16px;
+    box-sizing: content-box;
+    border-radius: 5px;
+}
+.Main_content {
+    background-color: #f3f3f4
+}
+
+.search_condition {
+    margin: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 10px; /* 圆角半径为20px */
+    background-color: #ffffff; /* 设置背景颜色为白色 */
+}
+
+.search_result {
+    margin: 10px;
+    height: 500px;
+    background-color: #ffffff;
+    border-radius: 10px; /* 圆角半径为20px */
+    background-color: #ffffff; /* 设置背景颜色为白色 */
+}
+
+/* 自定义下拉框样式 */
+select {
+    width: 300px; /* 设置宽度为100px */
+    height: 30px; /* 设置高度为30px */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+
+/* 设置选项样式 */
+option {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+input[type="text"] {
+    width: 300px; /* 设置宽度为100px */
+    height: 30px; /* 设置高度为30px */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+

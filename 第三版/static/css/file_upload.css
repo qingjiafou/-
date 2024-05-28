@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+.container {
+    height: 100vh;
+    width: 100vw;
+}
 .box {
     width: 200px;
     height: 100vh; /* 使用视窗高度作为高度单位 */
@@ -50,8 +54,9 @@
     text-align: center;
 }
 .content {
-    flex: 1;
+    height: 100vh; /* 使用视窗高度作为高度单位 */
     margin-left: 200px; /* 导航栏宽度 */
+    background-color: #f3f3f4
 }
 .right_menu {
     list-style-type: none;

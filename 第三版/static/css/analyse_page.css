@@ -3,6 +3,11 @@
     padding: 0;
 }
 
+.container {
+    height: 100vh;
+    width: 100vw;
+}
+
 .box {
     width: 200px;
     height: 100vh; /* 使用视窗高度作为高度单位 */
@@ -29,7 +34,7 @@
     text-align: center;
     margin: 0;
     padding: 10px 0;
-    color:white;
+    color: white;
     cursor: pointer; /* 添加指针样式 */
 }
 
@@ -49,10 +54,13 @@
     background-color: #8090f6;
     text-align: center;
 }
+
 .content {
-    flex: 1;
+    height: 100vh; /* 使用视窗高度作为高度单位 */
     margin-left: 200px; /* 导航栏宽度 */
+    background-color: #f3f3f4
 }
+
 .right_menu {
     list-style-type: none;
     padding: 0;
@@ -62,16 +70,19 @@
     right: 0;
     display: flex; /* 使用 Flex 布局使得子元素横向排列 */
 }
+
 .right_menu li {
     padding: 10px;
     margin: 5px;
     background-color: #f2f2f2;
     border: 1px solid #ccc;
 }
+
 .Top {
     background-color: #3c8dbc; /* 设置背景颜色 */
     padding: 30px;
 }
+
 .cursor-pointer {
     cursor: pointer;
 }
