@@ -4,11 +4,12 @@ import pymysql
 import mysql.connector
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from model import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
     UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking, \
-    UndergraduateWorkloadTeacherRanking
+    UndergraduateWorkloadTeacherRanking, TeacherInformation
 from database import db
 
 app = Flask(__name__)
@@ -53,12 +54,20 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# 校验密码
+
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'admin' and password == 'admin':
+        user = TeacherInformation.query.filter_by(teacher_id=username).first()
+        print("*************************")
+        print(user.password_hash)
+        print("**************************")
+
+        if user.verify_password(password):
             return render_template('index.html')
         else:
             return render_template('login.html', error=True)
@@ -130,7 +139,7 @@ def modify_page():
         table_name = "本科实习"
         results = DepartmentInternship.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
         result = [record.DepartmentInternship_list() for record in results]
-        columns = ["学生姓名", "学生学号", "专业", "年级", "学部内实习指导教师", "学部内实习指导教师工号","实习周数"]
+        columns = ["学生姓名", "学生学号", "专业", "年级", "学部内实习指导教师", "学部内实习指导教师工号", "实习周数"]
         return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     elif worksheet == "competition_awards":
         table_name = "学生竞赛"
@@ -177,7 +186,7 @@ def modify_page():
         table_name = "公共服务"
         results = PublicService.query.filter_by(teacher_id=teacher_id, teacher_name=teacher_name).all()
         result = [record.PublicService_list() for record in results]
-        columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号","工作量"]
+        columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号", "工作量"]
         return render_template('modify_page.html', result=result, table_name=table_name, columns=columns)
     return render_template('modify_page.html')
 
@@ -340,7 +349,7 @@ def update():
                 new_PublicService.work_duration = json_data["工作时长"]
                 new_PublicService.class_hours = json_data["课时"]
                 new_PublicService.teacher_id = json_data["教师工号"]
-                new_PublicService.workload=json_data["工作量"]
+                new_PublicService.workload = json_data["工作量"]
                 db.session.add(new_PublicService)
                 db.session.add()
                 return redirect(url_for('modify_page'))

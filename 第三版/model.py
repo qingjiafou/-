@@ -3,6 +3,28 @@ from flask_sqlalchemy import SQLAlchemy
 from database import db
 from sqlalchemy import event, func
 from sqlalchemy.orm import Session
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+class TeacherInformation(db.Model):
+    __tablename__ = 'teacher_information'
+
+    teacher_id = db.Column(db.String(255), primary_key=True, info='教工号')
+    teacher_name = db.Column(db.String(255), info='教师姓名')
+    password_hash = db.Column(db.String(255), info='hash密码')
+
+    @property
+    def password(self):
+        raise ArithmeticError("password是不可读字段")
+
+    # 设置密码，加密，比如,xxx.password=xxxx
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 
 class CompetitionAward(db.Model):
@@ -14,20 +36,19 @@ class CompetitionAward(db.Model):
     award_category = db.Column(db.String(24), info='获奖类别')
     award_level = db.Column(db.String(24), info='获奖等级')
     teacher_name = db.Column(db.String(24), info='指导教师')
-    teacher_id = db.Column(db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.String(24), db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info='指导教师工号')
     total_workload = db.Column(db.Float(precision=6, asdecimal=True), info='总工作量')
     award_year = db.Column(db.String(24), info='获奖年份')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='CompetitionAward.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
-                              backref='competition_awards')
+    teacher = db.relationship('TeacherInformation', backref='competition_awards')
 
-    def CompetitionAward_list(self):
-        return [self.id, self.event_name, self.work_name, self.award_category, self.award_level, self.teacher_name,
-                self.teacher_id, self.total_workload, self.award_year]
+    @classmethod
+    def CompetitionAward_list(cls):
+        return cls.query.all()
 
-    def add_competition_award(self, event_name, work_name, award_category, award_level, teacher_name, teacher_id,
+    @classmethod
+    def add_competition_award(cls, event_name, work_name, award_category, award_level, teacher_name, teacher_id,
                               total_workload, award_year):
         new_award = CompetitionAward(
             event_name=event_name,
@@ -51,12 +72,12 @@ class DepartmentInternship(db.Model):
     major = db.Column(db.String(24), info='专业')
     grade = db.Column(db.String(24), info='年级')
     teacher_name = db.Column(db.String(24), info='学部内实习指导教师')
-    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+    teacher_id = db.Column(db.String(24), db.ForeignKey('teacher_information.teacher_id'),
                            index=True,
                            info='学部内实习指导教师工号')
     week = db.Column(db.String(24), info='实习周数')
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='DepartmentInternship.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='DepartmentInternship.teacher_id == TeacherInformation.teacher_id',
                               backref='department_internships')
 
     def DepartmentInternship_list(self):
@@ -87,12 +108,12 @@ class EducationalResearchProject(db.Model):
     end_date = db.Column(db.Date, info='结项时间')
     acceptance_result = db.Column(db.String(24), info='验收结论')
     teacher_name = db.Column(db.String(24), info='教师姓名')
-    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+    teacher_id = db.Column(db.String(24), db.ForeignKey('teacher_information.teacher_id'),
                            index=True, info='工号')
     research_project_workload = db.Column(db.Float(precision=6, asdecimal=True), info='教研项目工作量')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='EducationalResearchProject.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='EducationalResearchProject.teacher_id == TeacherInformation.teacher_id',
                               backref='educational_research_projects')
 
     def EducationalResearchProject_list(self):
@@ -129,13 +150,13 @@ class FirstClassCourse(db.Model):
     leader = db.Column(db.String(24), info='负责人')
     remark = db.Column(db.String(24), info='备注，工作量分配')
     teacher_name = db.Column(db.String(24), info='教师姓名，一位老师一个记录')
-    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+    teacher_id = db.Column(db.String(24), db.ForeignKey('teacher_information.teacher_id'),
                            index=True,
                            info='工号，外键')
     first_class_course_workload = db.Column(db.Float(precision=6, asdecimal=True), info='一流课程工作量')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='FirstClassCourse.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='FirstClassCourse.teacher_id == TeacherInformation.teacher_id',
                               backref='first_class_courses')
 
     def FirstClassCourse_list(self):
@@ -174,12 +195,12 @@ class PublicService(db.Model):
     teacher_name = db.Column(db.String(24), info='姓名')
     work_duration = db.Column(db.Float(precision=6, asdecimal=True), info='工作时长')
     class_hours = db.Column(db.Float(precision=6, asdecimal=True), info='课时')
-    teacher_id = db.Column(db.String(24), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+    teacher_id = db.Column(db.String(24), db.ForeignKey('teacher_information.teacher_id'),
                            index=True,
                            info='教师工号，外键')
     workload = db.Column(db.Float, info='工作量')
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='PublicService.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='PublicService.teacher_id == TeacherInformation.teacher_id',
                               backref='public_services')
 
     def PublicService_list(self):
@@ -216,13 +237,13 @@ class StudentResearch(db.Model):
     student_id = db.Column(db.String(24), info='学号')
     total_members = db.Column(db.Integer, info='项目组总人数')
     teacher_name = db.Column(db.String(24), info='指导老师')
-    teacher_id = db.Column(db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info='指导老师工号')
     acceptance_result = db.Column(db.String(24), info='验收结果')
     workload = db.Column(db.Float(precision=6, asdecimal=True), info='工作量')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='StudentResearch.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='StudentResearch.teacher_id == TeacherInformation.teacher_id',
                               backref='student_researches')
 
     def StudentResearch_list(self):
@@ -262,12 +283,12 @@ class TeachingAchievementAward(db.Model):
     award_level = db.Column(db.String(24), info='获奖等级')
     remark = db.Column(db.String(24), info='备注')
     teacher_name = db.Column(db.String(24), info='教师')
-    teacher_id = db.Column(db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info='工号，外键')
     teaching_achievement_workload = db.Column(db.Float(precision=6, asdecimal=True), info='教学成果工作量')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='TeachingAchievementAward.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='TeachingAchievementAward.teacher_id == TeacherInformation.teacher_id',
                               backref='teaching_achievement_awards')
 
     def TeachingAchievementAward_list(self):
@@ -301,15 +322,15 @@ class UndergraduateMentorshipSystem(db.Model):
     __tablename__ = 'undergraduate_mentorship_system'
 
     teacher_name = db.Column(db.String(24), info='导师姓名')
-    teacher_id = db.Column(db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info='教工号')
     student_name = db.Column(db.String(24), info='学生姓名')
     grade = db.Column(db.String(24), info='年级')
     student_id = db.Column(db.String(24), primary_key=True, info='学号')
     teacher_workload = db.Column(db.Float(precision=6, asdecimal=True), info='教师工作量')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='UndergraduateMentorshipSystem.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='UndergraduateMentorshipSystem.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_mentorship_systems')
 
     def UndergraduateMentorshipSystem_list(self):
@@ -343,11 +364,11 @@ class UndergraduateThesi(db.Model):
     thesis_topic = db.Column(db.String(24), info='毕业论文题目')
     thesis_grade = db.Column(db.String(24), info='毕业论文成绩')
     teacher_name = db.Column(db.String(24), info='毕业论文指导老师')
-    teacher_id = db.Column(db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'), index=True,
+    teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info='毕业论文指导老师工号')
 
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='UndergraduateThesi.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='UndergraduateThesi.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_thesis')
 
     def UndergraduateThesi_list(self):
@@ -385,7 +406,7 @@ class UndergraduateWorkloadCourseRanking(db.Model):
     course_code = db.Column(db.String(24), primary_key=True, nullable=False, info='课程号')
     teaching_class = db.Column(db.String(24), primary_key=True, nullable=False, info='教学班')
     course_name = db.Column(db.String(50), info='课程名称')  # 调整长度
-    teacher_id = db.Column(db.String(20), db.ForeignKey('undergraduate_workload_teacher_ranking.teacher_id'),
+    teacher_id = db.Column(db.String(20), db.ForeignKey('teacher_information.teacher_id'),
                            index=True, info='教工号')  # 调整长度
     teacher_name = db.Column(db.String(30), info='教师名称')  # 调整长度
     seminar_hours = db.Column(db.Float, info='研讨学时')  # 调整类型为Float
@@ -402,8 +423,8 @@ class UndergraduateWorkloadCourseRanking(db.Model):
     total_course_hours = db.Column(db.Float, info='课程总学时')  # 调整类型为Float
 
     # 修改外键关系设置
-    teacher = db.relationship('UndergraduateWorkloadTeacherRanking',
-                              primaryjoin='UndergraduateWorkloadCourseRanking.teacher_id == UndergraduateWorkloadTeacherRanking.teacher_id',
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='UndergraduateWorkloadCourseRanking.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_workload_course_rankings')
 
     def UndergraduateWorkloadCourseRanking_list(self):
@@ -451,8 +472,8 @@ class UndergraduateWorkloadCourseRanking(db.Model):
 
 class UndergraduateWorkloadTeacherRanking(db.Model):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
-
-    teacher_id = db.Column(db.String(56), primary_key=True, info='教工号')
+    id = db.Column(db.Integer, primary_key=True, info='序号，主键，自增，无意义')
+    teacher_id = db.Column(db.String(56), db.ForeignKey('teacher_information.teacher_id'), info='教工号')
     teacher_name = db.Column(db.String(12), info='教师名称')
     undergraduate_course_total_hours = db.Column(db.Float, info='本科课程总学时')
     graduation_thesis_student_count = db.Column(db.Integer, info='毕业论文学生人数')
@@ -468,6 +489,10 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
     first_class_course = db.Column(db.Float, info='一流课程')
     teaching_achievement_award = db.Column(db.Float, info='教学成果奖')
     public_service = db.Column(db.Float, info='公共服务')
+    # 修改外键关系设置
+    teacher = db.relationship('TeacherInformation',
+                              primaryjoin='UndergraduateWorkloadTeacherRanking.teacher_id == TeacherInformation.teacher_id',
+                              backref='undergraduate_workload_teacher_ranking')
 
     def UndergraduateWorkloadTeacherRanking_list(self):
         return [
@@ -511,9 +536,9 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
 
 
 class workload_parameter(db.Model):
-    __tablename__ = '工作量参数表'
+    __tablename__ = 'workload_parameter'
 
-    id=db.Column(db.Integer, primary_key=True,info="序号")
+    id = db.Column(db.Integer, primary_key=True, info="序号")
     graduation_thesis_p_count = db.Column(db.Float, info="毕业论文参数")
     intership_count = db.Column(db.Float, info="指导实习参数")
     intership_js = db.Column(db.Float, info="实习点建设")
