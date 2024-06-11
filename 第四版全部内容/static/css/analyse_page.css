@@ -1,0 +1,176 @@
+*, body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+}
+
+.box {
+    width: 200px;
+    height: 100vh; /* 使用视窗高度作为高度单位 */
+    background-color: rgb(48, 65, 86);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto; /* 添加垂直滚动条 */
+}
+
+.ulList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.liList {
+    background-color: rgb(48, 65, 86);
+    position: relative;
+}
+
+.liList p {
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+    padding: 10px 0;
+    color: white;
+    cursor: pointer; /* 添加指针样式 */
+}
+
+.childUl {
+    display: none;
+}
+
+.liList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.liList ul li {
+    height: 60px;
+    line-height: 60px;
+    background-color: #8090f6;
+    text-align: center;
+}
+
+.content {
+    height: 100vh; /* 使用视窗高度作为高度单位 */
+    margin-left: 200px; /* 导航栏宽度 */
+    background-color: #f3f3f4
+}
+
+.right_menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: fixed; /* 使用固定定位 */
+    top: 0;
+    right: 0;
+    display: flex; /* 使用 Flex 布局使得子元素横向排列 */
+}
+
+.right_menu li {
+    padding: 10px;
+    margin: 5px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+}
+
+.Top {
+    background-color: #3c8dbc; /* 设置背景颜色 */
+    padding: 30px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.search_result {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    overflow-x: auto; /* 如果表格太宽，允许水平滚动 */
+}
+
+/* 设置表格样式 */
+#table_result {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#table_result caption {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+#table_result th,
+#table_result td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    max-width: 200px; /* 设置单元格最大宽度 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 文本溢出时显示省略号 */
+    white-space: nowrap; /* 避免文本换行 */
+}
+
+#table_result th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* 鼠标悬停时高亮显示 */
+#table_result tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.search_condition {
+    margin: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 10px; /* 圆角半径为20px */
+    background-color: #ffffff; /* 设置背景颜色为白色 */
+}
+
+
+/* 自定义下拉框样式 */
+select {
+    width: 300px; /* 设置宽度为100px */
+    height: 30px; /* 设置高度为30px */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+
+/* 设置选项样式 */
+option {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+input[type="text"] {
+    width: 300px; /* 设置宽度为100px */
+    height: 30px; /* 设置高度为30px */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+
+.search_condition button {
+    margin-right: 10px;
+    background-color: #1ab394;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    font-size: 16px;
+    box-sizing: content-box;
+    border-radius: 5px;
+
+}
