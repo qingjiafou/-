@@ -63,10 +63,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = TeacherInformation.query.filter_by(teacher_id=username).first()
-        print("*************************")
-        print(user.password_hash)
-        print("**************************")
-
         if user.verify_password(password):
             return render_template('index.html')
         else:
