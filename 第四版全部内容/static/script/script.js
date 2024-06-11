@@ -21,5 +21,5 @@ function goToanalysePage(){
         window.location.href='/analyse_page';
 }
 function goTomodifyPage(){
-        window.location.href='/modify_page';
+        window.location.href='/modify_page/all';
 }

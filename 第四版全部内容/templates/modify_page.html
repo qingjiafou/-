@@ -2,9 +2,9 @@
 <html>
 <head>
     <title>教学工作量采集与分析系统</title>
-    <link rel="stylesheet" type="text/css" href="static\css\modify_page.css">
-    <script src="static/script/jquery-3.7.1.js"></script>
-    <script src="static/script/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modify_page.css') }}">
+    <script src="{{ url_for('static', filename='script/jquery-3.7.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/script.js') }}"></script>
 </head>
 <body>
 <div class="container">
@@ -36,7 +36,7 @@
         <!--主要显示内容-->
         <div class="Main_content">
             <div class="search_condition">
-                <form action="/modify_page" method="post">
+                <form action="/modify_page/all" method="post">
                     <div class="form-row">
                         <p>教工号：<input type="text" name="teacher_id"> 教师名称：<input type="text" name="teacher_name">
                         </p>
@@ -53,13 +53,13 @@
                             <option value="teaching_achievement_awards">教学成果奖</option>
                             <option value="public_services">公共服务</option>
                         </select>
-                        <button type="submit"><img src="static/img/search.png" height ="15" width="15" />搜索</button>
+                        <button type="submit"><img src="{{ url_for('static', filename='img/search.png') }}" height ="15" width="15" />搜索</button>
 
                     </div>
                 </form>
             </div>
             <div class="search_result">
-                <button onclick="downloadCSV()" ><img src="static/img/export.png" height ="15" width="15" />导出</button>
+                <button onclick="downloadCSV()" ><img src="{{ url_for('static', filename='img/export.png') }}" height ="15" width="15" />导出</button>
                 <table id="table_result">
                     <caption>{{ table_name }}</caption>
                     <thead>

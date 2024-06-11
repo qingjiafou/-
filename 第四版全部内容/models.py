@@ -26,10 +26,8 @@ class TeacherInformation(db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-
 class CompetitionAward(db.Model):
     __tablename__ = 'competition_awards'
-
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     event_name = db.Column(db.String(24), info={'description': '赛事名称'})
     work_name = db.Column(db.String(24), info={'description': '作品名称'})
@@ -63,6 +61,20 @@ class CompetitionAward(db.Model):
         db.session.add(new_award)
         db.session.commit()
 
+    @staticmethod
+    def update_CompetitionAward(json_data):
+        new_competitionAward = CompetitionAward.query.filter_by(id=json_data["序号"]).first()
+        new_competitionAward.event_name = json_data["赛事名称"]
+        new_competitionAward.work_name = json_data["作品名称"]
+        new_competitionAward.award_category = json_data["获奖类别"]
+        new_competitionAward.award_level = json_data["获奖等级"]
+        new_competitionAward.teacher_name = json_data["指导教师"]
+        new_competitionAward.teacher_id = json_data["指导教师工号"]
+        new_competitionAward.total_workload = json_data["总工作量"]
+        new_competitionAward.award_year = json_data["获奖年份"]
+        db.session.add(new_competitionAward)
+        db.session.commit()
+
 
 class DepartmentInternship(db.Model):
     __tablename__ = 'department_internship'
@@ -79,9 +91,11 @@ class DepartmentInternship(db.Model):
                               primaryjoin='DepartmentInternship.teacher_id == TeacherInformation.teacher_id',
                               backref='department_internships')
 
+    @classmethod
     def DepartmentInternship_list(self):
         return [self.student_name, self.student_id, self.major, self.grade, self.teacher_name, self.teacher_id]
 
+    @classmethod
     def add_internship_record(self, student_name, student_id, major, grade, teacher_name, teacher_id):
         new_internship = DepartmentInternship(
             student_name=student_name,
@@ -94,9 +108,23 @@ class DepartmentInternship(db.Model):
         db.session.add(new_internship)
         db.session.commit()
 
+    @staticmethod
+    def update_DepartmentInternship(json_data):
+        new_departmentInternship = DepartmentInternship.query.filter_by(
+            student_id=json_data["学生学号"]).first()
+        new_departmentInternship.student_name = json_data["学生姓名"]
+        new_departmentInternship.major = json_data["专业"]
+        new_departmentInternship.grade = json_data["年级"]
+        new_departmentInternship.teacher_name = json_data["学部内实习指导教师"]
+        new_departmentInternship.teacher_id = json_data["学部内实习指导教师工号"]
+        new_departmentInternship.week = json_data["实习周数"]
+        db.session.add(new_departmentInternship)
+        db.session.commit()
+
 
 class EducationalResearchProject(db.Model):
     __tablename__ = 'educational_research_project'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
@@ -116,6 +144,7 @@ class EducationalResearchProject(db.Model):
                               primaryjoin='EducationalResearchProject.teacher_id == TeacherInformation.teacher_id',
                               backref='educational_research_projects')
 
+    @classmethod
     def EducationalResearchProject_list(self):
         return [
             self.id,
@@ -123,6 +152,7 @@ class EducationalResearchProject(db.Model):
             self.end_date, self.acceptance_result, self.teacher_name, self.teacher_id, self.research_project_workload
         ]
 
+    @classmethod
     def add_research_project(self, project_name, project_leader, project_members, project_level, start_date, end_date,
                              acceptance_result, teacher_name, teacher_id, research_project_workload):
         new_project = EducationalResearchProject(
@@ -140,9 +170,27 @@ class EducationalResearchProject(db.Model):
         db.session.add(new_project)
         db.session.commit()
 
+    @staticmethod
+    def update_EducationalResearchProject(json_data):
+        new_EducationalResearchProject = EducationalResearchProject.query.filter_by(
+            id=json_data["序号"]).first()
+        new_EducationalResearchProject.project_name = json_data["项目名称"]
+        new_EducationalResearchProject.project_leader = json_data["项目负责人"]
+        new_EducationalResearchProject.project_members = json_data["项目成员"]
+        new_EducationalResearchProject.project_level = json_data["级别"]
+        new_EducationalResearchProject.start_date = json_data["立项时间"]
+        new_EducationalResearchProject.end_date = json_data["结项时间"]
+        new_EducationalResearchProject.acceptance_result = json_data["验收结论"]
+        new_EducationalResearchProject.teacher_name = json_data["教师姓名"]
+        new_EducationalResearchProject.teacher_id = json_data["工号"]
+        new_EducationalResearchProject.research_project_workload = json_data["教研项目工作量"]
+        db.session.add(new_EducationalResearchProject)
+        db.session.commit()
+
 
 class FirstClassCourse(db.Model):
     __tablename__ = 'first_class_courses'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     course_type = db.Column(db.String(24), info={'description': '课程性质'})
@@ -159,6 +207,7 @@ class FirstClassCourse(db.Model):
                               primaryjoin='FirstClassCourse.teacher_id == TeacherInformation.teacher_id',
                               backref='first_class_courses')
 
+    @classmethod
     def FirstClassCourse_list(self):
         return [
             self.id,
@@ -171,6 +220,7 @@ class FirstClassCourse(db.Model):
             self.first_class_course_workload,
         ]
 
+    @classmethod
     def add_first_class_course(self, course_type, content, leader, remark, teacher_name, teacher_id,
                                first_class_course_workload):
         new_course = FirstClassCourse(
@@ -185,9 +235,23 @@ class FirstClassCourse(db.Model):
         db.session.add(new_course)
         db.session.commit()
 
+    @staticmethod
+    def update_FirstClassCourse(json_data):
+        new_FirstClassCourse = FirstClassCourse.query.filter_by(id=json_data["序号"]).first()
+        new_FirstClassCourse.course_type = json_data["课程性质"]
+        new_FirstClassCourse.content = json_data["内容"]
+        new_FirstClassCourse.leader = json_data["负责人"]
+        new_FirstClassCourse.remark = json_data["备注"]
+        new_FirstClassCourse.teacher_name = json_data["教师姓名"]
+        new_FirstClassCourse.teacher_id = json_data["工号"]
+        new_FirstClassCourse.first_class_course_workload = json_data["一流课程工作量"]
+        db.session.add(new_FirstClassCourse)
+        db.session.commit()
+
 
 class PublicService(db.Model):
     __tablename__ = 'public_services'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     serve_date = db.Column(db.String(24), info={'description': '日期'})
@@ -202,6 +266,7 @@ class PublicService(db.Model):
                               primaryjoin='PublicService.teacher_id == TeacherInformation.teacher_id',
                               backref='public_services')
 
+    @classmethod
     def PublicService_list(self):
         return [
             self.id,
@@ -213,6 +278,7 @@ class PublicService(db.Model):
             self.teacher_id
         ]
 
+    @classmethod
     def add_public_service_record(self, serve_date, content, teacher_name, work_duration, class_hours, teacher_id):
         new_record = PublicService(
             serve_date=serve_date,
@@ -225,9 +291,23 @@ class PublicService(db.Model):
         db.session.add(new_record)
         db.session.commit()
 
+    @staticmethod
+    def update_PublicService(json_data):
+        new_PublicService = PublicService.query.filter_by(id=json_data["序号"])
+        new_PublicService.serve_date = json_data["日期"]
+        new_PublicService.content = json_data["内容"]
+        new_PublicService.teacher_name = json_data["姓名"]
+        new_PublicService.work_duration = json_data["工作时长"]
+        new_PublicService.class_hours = json_data["课时"]
+        new_PublicService.teacher_id = json_data["教师工号"]
+        new_PublicService.workload = json_data["工作量"]
+        db.session.add(new_PublicService)
+        db.session.add()
+
 
 class StudentResearch(db.Model):
     __tablename__ = 'student_research'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
@@ -245,6 +325,7 @@ class StudentResearch(db.Model):
                               primaryjoin='StudentResearch.teacher_id == TeacherInformation.teacher_id',
                               backref='student_researches')
 
+    @classmethod
     def StudentResearch_list(self):
         return [
             self.id, self.project_name, self.project_level,
@@ -253,6 +334,7 @@ class StudentResearch(db.Model):
             self.workload
         ]
 
+    @classmethod
     def add_student_research_record(self, project_name, project_level, leader, student_id, total_members, teacher_name,
                                     teacher_id, acceptance_result, workload):
         new_record = StudentResearch(
@@ -269,9 +351,25 @@ class StudentResearch(db.Model):
         db.session.add(new_record)
         db.session.commit()
 
+    @staticmethod
+    def update_StudentResearch(json_data):
+        new_StudentResearch = StudentResearch.query.filter_by(id=json_data["序号"]).first()
+        new_StudentResearch.project_name = json_data["项目名称"]
+        new_StudentResearch.project_level = json_data["级别"]
+        new_StudentResearch.leader = json_data["负责人"]
+        new_StudentResearch.student_id = json_data["学号"]
+        new_StudentResearch.total_members = json_data["项目组总人数"]
+        new_StudentResearch.teacher_name = json_data["指导老师"]
+        new_StudentResearch.teacher_id = json_data["指导老师工号"]
+        new_StudentResearch.acceptance_result = json_data["验收结果"]
+        new_StudentResearch.workload = json_data["工作量"]
+        db.session.add(new_StudentResearch)
+        db.session.commit()
+
 
 class TeachingAchievementAward(db.Model):
     __tablename__ = 'teaching_achievement_awards'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     student_session = db.Column(db.String(24), info={'description': '届'})
@@ -291,6 +389,7 @@ class TeachingAchievementAward(db.Model):
                               primaryjoin='TeachingAchievementAward.teacher_id == TeacherInformation.teacher_id',
                               backref='teaching_achievement_awards')
 
+    @classmethod
     def TeachingAchievementAward_list(self):
         return [
             self.id, self.student_session, self.student_date,
@@ -299,6 +398,7 @@ class TeachingAchievementAward(db.Model):
             self.teacher_name, self.teacher_id, self.teaching_achievement_workload
         ]
 
+    @classmethod
     def add_teaching_achievement_record(self, student_session, student_date, recommended_achievement_name,
                                         main_completion_person_name, award_category, award_level, remark, teacher_name,
                                         teacher_id, teaching_achievement_workload):
@@ -317,9 +417,26 @@ class TeachingAchievementAward(db.Model):
         db.session.add(new_record)
         db.session.commit()
 
+    @staticmethod
+    def update_TeachingAchievementAward(json_data):
+        new_TeachingAchievementAward = TeachingAchievementAward.query.filter_by(id=json_data["序号"])
+        new_TeachingAchievementAward.student_session = json_data["届"]
+        new_TeachingAchievementAward.student_date = json_data["时间"]
+        new_TeachingAchievementAward.recommended_achievement_name = json_data["推荐成果名称"]
+        new_TeachingAchievementAward.main_completion_person_name = json_data["成果主要完成人名称"]
+        new_TeachingAchievementAward.award_category = json_data["获奖类别"]
+        new_TeachingAchievementAward.award_level = json_data["获奖等级"]
+        new_TeachingAchievementAward.remark = json_data["备注"]
+        new_TeachingAchievementAward.teacher_name = json_data["教师"]
+        new_TeachingAchievementAward.teacher_id = json_data["工号"]
+        new_TeachingAchievementAward.teaching_achievement_workload = json_data["教学成果工作量"]
+        db.session.add(new_TeachingAchievementAward)
+        db.session.commit()
+
 
 class UndergraduateMentorshipSystem(db.Model):
     __tablename__ = 'undergraduate_mentorship_system'
+
 
     teacher_name = db.Column(db.String(24), info={'description': '导师姓名'})
     teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
@@ -333,12 +450,14 @@ class UndergraduateMentorshipSystem(db.Model):
                               primaryjoin='UndergraduateMentorshipSystem.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_mentorship_systems')
 
+    @classmethod
     def UndergraduateMentorshipSystem_list(self):
         return [
             self.teacher_name, self.teacher_id, self.student_name,
             self.grade, self.student_id, self.teacher_workload
         ]
 
+    @classmethod
     def add_mentorship_record(self, teacher_name, teacher_id, student_name, grade, student_id, teacher_workload):
         new_record = UndergraduateMentorshipSystem(
             teacher_name=teacher_name,
@@ -351,9 +470,22 @@ class UndergraduateMentorshipSystem(db.Model):
         db.session.add(new_record)
         db.session.commit()
 
+    @staticmethod
+    def update_UndergraduateMentorshipSystem(json_data):
+        new_UndergraduateMentorshipSystem = UndergraduateMentorshipSystem.query.filter_by(
+            student_id=json_data["学号"]).first()
+        new_UndergraduateMentorshipSystem.teacher_name = json_data["导师姓名"]
+        new_UndergraduateMentorshipSystem.teacher_id = json_data["教工号"]
+        new_UndergraduateMentorshipSystem.student_name = json_data["学生姓名"]
+        new_UndergraduateMentorshipSystem.grade = json_data["年级"]
+        new_UndergraduateMentorshipSystem.teacher_workload = json_data["教师工作量"]
+        db.session.add(new_UndergraduateMentorshipSystem)
+        db.session.commit()
+
 
 class UndergraduateThesi(db.Model):
     __tablename__ = 'undergraduate_thesis'
+
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
     student_id = db.Column(db.String(24), primary_key=True, info={'description': '学生学号'})
@@ -371,12 +503,14 @@ class UndergraduateThesi(db.Model):
                               primaryjoin='UndergraduateThesi.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_thesis')
 
+    @classmethod
     def UndergraduateThesi_list(self):
         return [
             self.student_name, self.student_id, self.college, self.major, self.major_id,
             self.grade, self.thesis_topic, self.thesis_grade, self.teacher_name, self.teacher_id
         ]
 
+    @classmethod
     def add_thesis_record(self, student_name, student_id, college, major, major_id, grade, thesis_topic, thesis_grade,
                           teacher_name, teacher_id):
         new_record = UndergraduateThesi(
@@ -394,9 +528,25 @@ class UndergraduateThesi(db.Model):
         db.session.add(new_record)
         db.session.commit()
 
+    @staticmethod
+    def update_UndergraduateThesi(json_data):
+        new_undergraduate_thesis = UndergraduateThesi.query.filter_by(student_id=json_data["学生学号"]).first()
+        new_undergraduate_thesis.student_name = json_data["学生姓名"]
+        new_undergraduate_thesis.college = json_data["学院"]
+        new_undergraduate_thesis.major = json_data["专业"]
+        new_undergraduate_thesis.major_id = json_data["专业号"]
+        new_undergraduate_thesis.grade = json_data["年级"]
+        new_undergraduate_thesis.thesis_topic = json_data["毕业论文题目"]
+        new_undergraduate_thesis.thesis_grade = json_data["毕业论文成绩"]
+        new_undergraduate_thesis.teacher_name = json_data["毕业论文指导老师"]
+        new_undergraduate_thesis.teacher_id = json_data["毕业论文指导老师工号"]
+        db.session.add(new_undergraduate_thesis)
+        db.session.commit()
+
 
 class UndergraduateWorkloadCourseRanking(db.Model):
     __tablename__ = 'undergraduate_workload_course_ranking'
+
 
     academic_year = db.Column(db.String(10), info={'description': '学年'})
     semester = db.Column(db.String(10), info={'description': '学期'})
@@ -427,6 +577,7 @@ class UndergraduateWorkloadCourseRanking(db.Model):
                               primaryjoin='UndergraduateWorkloadCourseRanking.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_workload_course_rankings')
 
+    @classmethod
     def UndergraduateWorkloadCourseRanking_list(self):
         return [
             self.academic_year, self.semester, self.calendar_year, self.half_year, self.course_code,
@@ -437,6 +588,7 @@ class UndergraduateWorkloadCourseRanking(db.Model):
             self.total_course_hours
         ]
 
+    @classmethod
     def add_course_ranking(self, academic_year, semester, calendar_year, half_year, course_code, teaching_class,
                            course_name, teacher_id, teacher_name, seminar_hours, lecture_hours, lab_hours,
                            enrolled_students, student_weight_coefficient_b, course_type_coefficient_a,
@@ -469,9 +621,46 @@ class UndergraduateWorkloadCourseRanking(db.Model):
         db.session.add(new_course_ranking)
         db.session.commit()
 
+    @staticmethod
+    def update_UndergraduateWorkloadCourseRanking_list(json_data):
+        new_workload_course_ranking = UndergraduateWorkloadCourseRanking.query.filter_by(
+            course_code=json_data["课程号"],
+            teaching_class=json_data["教学班"]
+        ).first()
+
+        if not new_workload_course_ranking:
+            new_workload_course_ranking = UndergraduateWorkloadCourseRanking(
+                course_code=json_data["课程号"],
+                teaching_class=json_data["教学班"]
+            )
+
+        new_workload_course_ranking.academic_year = json_data["学年"]
+        new_workload_course_ranking.semester = json_data["学期"]
+        new_workload_course_ranking.calendar_year = json_data["自然年"]
+        new_workload_course_ranking.half_year = json_data["上下半年"]
+        new_workload_course_ranking.course_name = json_data["课程名称"]
+        new_workload_course_ranking.seminar_hours = json_data["研讨学时"]
+        new_workload_course_ranking.lecture_hours = json_data["授课学时"]
+        new_workload_course_ranking.lab_hours = json_data["实验学时"]
+        new_workload_course_ranking.enrolled_students = json_data["选课人数"]
+        new_workload_course_ranking.student_weight_coefficient_b = json_data["学生数量权重系数B"]
+        new_workload_course_ranking.course_type_coefficient_a = json_data["课程类型系数A"]
+        new_workload_course_ranking.total_lecture_hours_p1 = json_data["理论课总学时P1"]
+        new_workload_course_ranking.lab_group_count = json_data["实验分组数"]
+        new_workload_course_ranking.lab_coefficient = json_data["实验课系数"]
+        new_workload_course_ranking.total_lab_hours_p2 = json_data["实验课总学时P2"]
+        new_workload_course_ranking.course_split_ratio_for_engineering_center = json_data["课程拆分占比（工程中心用）"]
+        new_workload_course_ranking.total_course_hours = json_data["课程总学时"]
+        new_workload_course_ranking.teacher_id = json_data["教工号"]
+        new_workload_course_ranking.teacher_name = json_data["教师名称"]
+
+        db.session.add(new_workload_course_ranking)
+        db.session.commit()
+
 
 class UndergraduateWorkloadTeacherRanking(db.Model):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
+
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     teacher_id = db.Column(db.String(30), db.ForeignKey('teacher_information.teacher_id'),
@@ -497,6 +686,7 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
                               primaryjoin='UndergraduateWorkloadTeacherRanking.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_workload_teacher_ranking')
 
+    @classmethod
     def UndergraduateWorkloadTeacherRanking_list(self):
         return [
             self.teacher_id, self.teacher_name,
@@ -509,6 +699,7 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
             self.first_class_course, self.teaching_achievement_award, self.public_service
         ]
 
+    @classmethod
     def add_teacher_ranking(self, teacher_id, teacher_name, undergraduate_course_total_hours,
                             graduation_thesis_student_count, graduation_thesis_p, teaching_internship_student_count,
                             teaching_internship_weeks, teaching_internship_p,
