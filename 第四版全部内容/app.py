@@ -1,50 +1,56 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 from flask_migrate import Migrate
-import pymysql
-import mysql.connector
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-import os
-import modify_page
-from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
-from database import db
+from flask_login import LoginManager, login_user, logout_user, login_required,current_user
 from Config import Config
+from database import db
 from modify_page.modify_page_bp import modify_page_blueprint
+from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
 from 第四版全部内容.upload_page.upload_page_bp import upload_page_blueprint
 
 app = Flask(__name__, template_folder='templates')
 Migrate(app, db)
-
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # 设置登录视图名称
 # 读取配置
 app.config.from_object(Config)
 
 # 创建数据库sqlalchemy工具对象
 db.init_app(app)
 
-@app.route('/', methods=['GET', 'POST'])
+@login_manager.user_loader
+def load_user(teacher_id):
+    return TeacherInformation.query.get(teacher_id)
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = TeacherInformation.query.filter_by(teacher_id=username).first()
-        if user.verify_password(password):
-            return render_template('index.html')
+        action = request.form['action']
+        if action == 'login':
+            # 处理登录操作
+            user = TeacherInformation.query.filter_by(teacher_id=username).first()
+            if user.verify_password(password):
+                login_user(user) # 登入用户
+                return redirect(url_for('index'))  # 重定向到主页
+            else:
+                return redirect(url_for('login'))  # 重定向回登录页面
         else:
-            return render_template('login.html', error=True)
+            return redirect(url_for('register'))
     else:
-        return render_template('login.html', error=False)
-
+        return redirect(url_for('login'))  # 重定向回登录页面
 
 @app.route('/logout')
 def logout():
-    # 重定向到登录页面
-    return render_template('login.html')
+    logout_user()
+    return render_template(url_for('login'))
 
 
-@app.route('/toindex')
+@app.route('/')
+@login_required
 def index():
-    return render_template('index.html')
+    return render_template('index.html', user=current_user)
+
 
 
 

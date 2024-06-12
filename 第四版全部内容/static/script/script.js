@@ -15,7 +15,7 @@ function goTofilePage() {
         window.location.href = '/file_upload';
     }
 function gotoHome(){
-        window.location.href='/toindex';
+        window.location.href = '/index';
 }
 function goToanalysePage(){
         window.location.href='/analyse_page';

@@ -4,9 +4,9 @@ from database import db
 from sqlalchemy import event, func
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-
-class TeacherInformation(db.Model):
+class TeacherInformation(db.Model, UserMixin):
     __tablename__ = 'teacher_information'
 
     teacher_id = db.Column(db.String(255), primary_key=True, info={'description': '教工号'})
@@ -24,7 +24,8 @@ class TeacherInformation(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-
+    def get_id(self):
+        return self.teacher_id  # 使用 teacher_id 作为用户 ID
 
 class CompetitionAward(db.Model):
     __tablename__ = 'competition_awards'
