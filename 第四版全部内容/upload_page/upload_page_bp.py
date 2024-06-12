@@ -1,6 +1,8 @@
 # 导入蓝图
 import os
 from flask import Blueprint, render_template, request, current_app, flash, redirect, url_for
+from flask_login import login_required
+
 from 第四版全部内容.Config import Config
 
 """
@@ -28,11 +30,13 @@ def allowed_file(filename):
 # 用蓝图注册路由
 # 跳转到这个界面
 @upload_page_blueprint.route("/file_upload")
+@login_required
 def file_upload_page():
     return render_template('file_upload.html')
 
 
 @upload_page_blueprint.route("/file_upload/load", methods=['POST', 'GET'])
+@login_required
 def upload_file():
     if request.method == 'GET':
         return render_template('file_upload.html')

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+
 class TeacherInformation(db.Model, UserMixin):
     __tablename__ = 'teacher_information'
 
@@ -24,8 +25,20 @@ class TeacherInformation(db.Model, UserMixin):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
     def get_id(self):
         return self.teacher_id  # 使用 teacher_id 作为用户 ID
+
+    @classmethod
+    def add_teacher_info(cls, teacher_id, teacher_name, password):
+        new_teacher_info = cls(
+        )
+        new_teacher_info.teacher_id = teacher_id
+        new_teacher_info.teacher_name = teacher_name
+        new_teacher_info.password = password  # 使用 setter 进行密码哈希
+        db.session.add(new_teacher_info)
+        db.session.commit()
+
 
 class CompetitionAward(db.Model):
     __tablename__ = 'competition_awards'
@@ -126,7 +139,6 @@ class DepartmentInternship(db.Model):
 class EducationalResearchProject(db.Model):
     __tablename__ = 'educational_research_project'
 
-
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
     project_leader = db.Column(db.String(24), info={'description': '项目负责人'})
@@ -192,7 +204,6 @@ class EducationalResearchProject(db.Model):
 class FirstClassCourse(db.Model):
     __tablename__ = 'first_class_courses'
 
-
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     course_type = db.Column(db.String(24), info={'description': '课程性质'})
     content = db.Column(db.String(24), info={'description': '内容'})
@@ -253,7 +264,6 @@ class FirstClassCourse(db.Model):
 class PublicService(db.Model):
     __tablename__ = 'public_services'
 
-
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     serve_date = db.Column(db.String(24), info={'description': '日期'})
     content = db.Column(db.String(24), info={'description': '内容'})
@@ -308,7 +318,6 @@ class PublicService(db.Model):
 
 class StudentResearch(db.Model):
     __tablename__ = 'student_research'
-
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
@@ -370,7 +379,6 @@ class StudentResearch(db.Model):
 
 class TeachingAchievementAward(db.Model):
     __tablename__ = 'teaching_achievement_awards'
-
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     student_session = db.Column(db.String(24), info={'description': '届'})
@@ -438,7 +446,6 @@ class TeachingAchievementAward(db.Model):
 class UndergraduateMentorshipSystem(db.Model):
     __tablename__ = 'undergraduate_mentorship_system'
 
-
     teacher_name = db.Column(db.String(24), info={'description': '导师姓名'})
     teacher_id = db.Column(db.ForeignKey('teacher_information.teacher_id'), index=True,
                            info={'description': '教工号'})
@@ -486,7 +493,6 @@ class UndergraduateMentorshipSystem(db.Model):
 
 class UndergraduateThesi(db.Model):
     __tablename__ = 'undergraduate_thesis'
-
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
     student_id = db.Column(db.String(24), primary_key=True, info={'description': '学生学号'})
@@ -547,7 +553,6 @@ class UndergraduateThesi(db.Model):
 
 class UndergraduateWorkloadCourseRanking(db.Model):
     __tablename__ = 'undergraduate_workload_course_ranking'
-
 
     academic_year = db.Column(db.String(10), info={'description': '学年'})
     semester = db.Column(db.String(10), info={'description': '学期'})
@@ -661,7 +666,6 @@ class UndergraduateWorkloadCourseRanking(db.Model):
 
 class UndergraduateWorkloadTeacherRanking(db.Model):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
-
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
     teacher_id = db.Column(db.String(30), db.ForeignKey('teacher_information.teacher_id'),

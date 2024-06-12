@@ -1,5 +1,7 @@
 # 导入蓝图
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_required
+
 from 第四版全部内容.models import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
     UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking
@@ -15,6 +17,7 @@ modify_page_blueprint = Blueprint('modify_page', __name__,template_folder='templ
 
 # 用蓝图注册路由
 @modify_page_blueprint.route("/modify_page/all", methods=['POST', 'GET'])
+@login_required
 def modify_page():
     worksheet = request.form.get('worksheet')
     # 获取用户输入的教工号和教师名称
@@ -98,6 +101,7 @@ def modify_page():
 
 
 @modify_page_blueprint.route("/modify_page/update", methods=['POST', 'GET'])
+@login_required
 def update():
     if request.method == 'POST':
         # 获取前端发送的 JSON 数据

@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, logout_user, login_required,current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from Config import Config
 from database import db
 from modify_page.modify_page_bp import modify_page_blueprint
+from 第四版全部内容.analyse_page.analyse_page_bp import analyse_page_blueprint
 from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
 from 第四版全部内容.upload_page.upload_page_bp import upload_page_blueprint
 
@@ -17,9 +18,11 @@ app.config.from_object(Config)
 # 创建数据库sqlalchemy工具对象
 db.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(teacher_id):
     return TeacherInformation.query.get(teacher_id)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,48 +33,63 @@ def login():
         if action == 'login':
             # 处理登录操作
             user = TeacherInformation.query.filter_by(teacher_id=username).first()
-            if user.verify_password(password):
-                login_user(user) # 登入用户
+            if user and user.verify_password(password):
+                login_user(user)  # 登入用户
                 return redirect(url_for('index'))  # 重定向到主页
             else:
-                return redirect(url_for('login'))  # 重定向回登录页面
+                # 登录失败处理
+                flash('Invalid username or password')
+                return redirect(url_for('login'))  # 渲染登录页面
         else:
             return redirect(url_for('register'))
     else:
-        return redirect(url_for('login'))  # 重定向回登录页面
+        return render_template('login.html')
 
-@app.route('/logout')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        teacher_name = request.form['teacher_name']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        #教工号、教师姓名、密码
+        if password != confirm_password:
+            flash('Passwords do not match')
+            return redirect(url_for('register'))
+
+        existing_user = TeacherInformation.query.filter_by(teacher_id=username).first()
+        if existing_user:
+            flash('Username already exists')
+            return redirect(url_for('register'))
+
+        TeacherInformation.add_teacher_info(username, teacher_name, password)
+
+        flash('Registration successful, please login')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+@app.route('/logout')  # 登出
+@login_required
 def logout():
     logout_user()
-    return render_template(url_for('login'))
+    return redirect(url_for('login'))
+
 
 
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', user=current_user)
+    return render_template('index.html',teacher_id=current_user.teacher_id)
+
 
 
 
 
 app.register_blueprint(modify_page_blueprint)
 app.register_blueprint(upload_page_blueprint)
+app.register_blueprint(analyse_page_blueprint)
 
-@app.route('/analyse_page', methods=['POST', 'GET'])
-def analyse_page():
-    if request.method == 'POST':
-        teacher_id = request.form.get('teacher_id')
-        teacher_name = request.form.get('teacher_name')
-        results = UndergraduateWorkloadTeacherRanking.query.filter_by(teacher_id=teacher_id,
-                                                                      teacher_name=teacher_name).all()
-        result = [record.UndergraduateWorkloadTeacherRanking_list() for record in results]
-        columns = ["教工号", "教师名称", "本科课程总学时", "毕业论文学生人数", "毕业论文P",
-                   "指导教学实习人数", "指导教学实习周数", "指导教学实习P",
-                   "负责实习点建设与管理P", "指导本科生竞赛P", "指导本科生科研P", "本科生导师制", "教研教改P",
-                   "一流课程", "教学成果奖", "公共服务"]
-        return render_template('analyse_page.html', result=result, columns=columns)
-    else:
-        return render_template('analyse_page.html')
 
 
 if __name__ == '__main__':
