@@ -10,7 +10,7 @@ from 第四版全部内容.models import CompetitionAward, DepartmentInternship,
 第二个参数：导入蓝图的名称
 第三个参数：蓝图前缀，该蓝图下的路由规则前缀都需要加上这个
 """
-modify_page_blueprint = Blueprint('news', __name__,template_folder='templates')
+modify_page_blueprint = Blueprint('modify_page', __name__,template_folder='templates')
 
 
 # 用蓝图注册路由

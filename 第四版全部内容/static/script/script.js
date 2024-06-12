@@ -23,3 +23,5 @@ function goToanalysePage(){
 function goTomodifyPage(){
         window.location.href='/modify_page/all';
 }
+
+

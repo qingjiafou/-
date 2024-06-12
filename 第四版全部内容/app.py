@@ -9,39 +9,18 @@ import os
 import modify_page
 from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
 from database import db
-from DatabaseConfig import Config
+from Config import Config
 from modify_page.modify_page_bp import modify_page_blueprint
+from 第四版全部内容.upload_page.upload_page_bp import upload_page_blueprint
 
 app = Flask(__name__, template_folder='templates')
 Migrate(app, db)
-
-
 
 # 读取配置
 app.config.from_object(Config)
 
 # 创建数据库sqlalchemy工具对象
 db.init_app(app)
-
-# 定义上传文件的保存目录
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# 创建上传文件目录
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-# 允许上传的文件类型
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
-
-
-# 检查文件扩展名是否符合要求
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-# 校验密码
-
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -68,30 +47,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return 'No file part'
-
-    file = request.files['file']
-
-    if file.filename == '':
-        return 'No selected file'
-
-    if allowed_file(file.filename):
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-        return 'File uploaded successfully'
-
-    return 'Invalid file format'
-
-
-@app.route('/file_upload')
-def file_upload_page():
-    return render_template('file_upload.html')
-
 
 app.register_blueprint(modify_page_blueprint)
-
+app.register_blueprint(upload_page_blueprint)
 
 @app.route('/analyse_page', methods=['POST', 'GET'])
 def analyse_page():
