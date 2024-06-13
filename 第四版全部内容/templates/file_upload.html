@@ -15,10 +15,12 @@
                 <p id="homeButton" data-url="{{ url_for('index') }}" onclick="gotoHome()">首页</p>
             </li>
             <li class="liList">
-                <p id="filePageButton" data-url="{{ url_for('upload_page.file_upload_page') }}" onclick="goTofilePage()">教师工作量采集</p>
+                <p id="filePageButton" data-url="{{ url_for('upload_page.file_upload_page') }}"
+                   onclick="goTofilePage()">教师工作量采集</p>
             </li>
             <li class="liList">
-                <p id="analysePageButton" data-url="{{ url_for('analyse_page.analyse_page') }}" onclick="goToanalysePage()">
+                <p id="analysePageButton" data-url="{{ url_for('analyse_page.analyse_page') }}"
+                   onclick="goToanalysePage()">
                     教师工作量分析</p>
             </li>
             <li class="liList">
@@ -36,21 +38,58 @@
         </div>
         <!--主要显示内容-->
         <div class="Main_content">
-            <h1>上传文件</h1>
-            <form action="/file_upload/load" method="post" enctype="multipart/form-data">
-                <input type="file" name="file">
-                <input type="submit" value="Upload">
+            <!-- 选择要手动添加数据的表 -->
+            <form action="/file_upload/add" method="post">
+                <div class="form-row">
+                    <select name="worksheet">
+                        <option value="NULL">请选择要手动添加数据的表</option>
+                        <option value="undergraduate_workload_course_ranking">本科工作量课程排序表</option>
+                        <option value="undergraduate_thesis">毕业论文</option>
+                        <option value="department_internship">本科实习</option>
+                        <option value="competition_awards">学生竞赛</option>
+                        <option value="student_research">学生科研</option>
+                        <option value="undergraduate_mentorship_system">本科生导师制</option>
+                        <option value="educational_research_project">教研项目</option>
+                        <option value="first_class_courses">一流课程</option>
+                        <option value="teaching_achievement_awards">教学成果奖</option>
+                        <option value="public_services">公共服务</option>
+                    </select>
+                    <button type="submit">选择</button>
+                </div>
             </form>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class=flashes>
-                        {% for category, message in messages %}
-                            <li class="{{ category }}">{{ message }}</li>
+
+            <!-- 文件上传表单 -->
+            <div class="add_form">
+                <form action="/file_upload/load" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file">
+                    <input type="submit" value="Upload">
+                </form>
+
+                <!-- 上传的消息 -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul class="flashes">
+                            {% for category, message in messages %}
+                                <li class="{{ category }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- 手动添加数据表单 -->
+                <div class="submit_form">
+                    <form action="/file_upload/submit" method="post">
+                        <!-- 隐藏的输入字段，用于存储表单的名称 -->
+                        <input type="hidden" name="{{ table_name }}" value="{{ table_name }}">
+                        {% for column in columns %}
+                            <label for="{{ column }}">{{ column }}</label>
+                            <input type="text" id="{{ column }}" name="{{ column }}" required><br><br>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+                        <input type="submit" value="上传">
+                    </form>
+                </div>
+
+            </div>
         </div>
-    </div>
 </body>
 </html>

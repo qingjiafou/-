@@ -75,22 +75,15 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-
-
 @app.route('/')
 @login_required
 def index():
     return render_template('index.html',teacher_id=current_user.teacher_id)
 
 
-
-
-
-app.register_blueprint(modify_page_blueprint)
 app.register_blueprint(upload_page_blueprint)
+app.register_blueprint(modify_page_blueprint)
 app.register_blueprint(analyse_page_blueprint)
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

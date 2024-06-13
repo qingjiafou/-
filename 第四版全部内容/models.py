@@ -59,18 +59,18 @@ class CompetitionAward(db.Model):
     def CompetitionAward_list(cls):
         return cls.query.all()
 
-    @classmethod
-    def add_competition_award(cls, event_name, work_name, award_category, award_level, teacher_name, teacher_id,
-                              total_workload, award_year):
+    @staticmethod
+    def add_competition_award(json_data):
         new_award = CompetitionAward(
-            event_name=event_name,
-            work_name=work_name,
-            award_category=award_category,
-            award_level=award_level,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            total_workload=total_workload,
-            award_year=award_year
+            id=json_data["序号"],
+            event_name=json_data["赛事名称"],
+            work_name=json_data["作品名称"],
+            award_category=json_data["获奖类别"],
+            award_level=json_data["获奖等级"],
+            teacher_name=json_data["指导教师"],
+            teacher_id=json_data["指导教师工号"],
+            total_workload=json_data["总工作量"],
+            award_year=json_data["获奖年份"]
         )
         db.session.add(new_award)
         db.session.commit()
@@ -109,15 +109,16 @@ class DepartmentInternship(db.Model):
     def DepartmentInternship_list(self):
         return [self.student_name, self.student_id, self.major, self.grade, self.teacher_name, self.teacher_id]
 
-    @classmethod
-    def add_internship_record(self, student_name, student_id, major, grade, teacher_name, teacher_id):
+    @staticmethod
+    def add_internship_record(json_data):
         new_internship = DepartmentInternship(
-            student_name=student_name,
-            student_id=student_id,
-            major=major,
-            grade=grade,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id
+            student_name=json_data["学生姓名"],
+            student_id=json_data["学生学号"],
+            major=json_data["专业"],
+            grade=json_data["年级"],
+            teacher_name=json_data["学部内实习指导教师"],
+            teacher_id=json_data["学部内实习指导教师工号"],
+            week=json_data["实习周数"]
         )
         db.session.add(new_internship)
         db.session.commit()
@@ -165,20 +166,20 @@ class EducationalResearchProject(db.Model):
             self.end_date, self.acceptance_result, self.teacher_name, self.teacher_id, self.research_project_workload
         ]
 
-    @classmethod
-    def add_research_project(self, project_name, project_leader, project_members, project_level, start_date, end_date,
-                             acceptance_result, teacher_name, teacher_id, research_project_workload):
+    @staticmethod
+    def add_research_project(json_data):
         new_project = EducationalResearchProject(
-            project_name=project_name,
-            project_leader=project_leader,
-            project_members=project_members,
-            project_level=project_level,
-            start_date=start_date,
-            end_date=end_date,
-            acceptance_result=acceptance_result,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            research_project_workload=research_project_workload
+            id=json_data["序号"],
+            project_name=json_data["项目名称"],
+            project_leader=json_data["项目负责人"],
+            project_members=json_data["项目成员"],
+            project_level=json_data["级别"],
+            start_date=json_data["立项时间"],
+            end_date=json_data["结项时间"],
+            acceptance_result=json_data["验收结论"],
+            teacher_name=json_data["教师姓名"],
+            teacher_id=json_data["工号"],
+            research_project_workload=json_data["教研项目工作量"]
         )
         db.session.add(new_project)
         db.session.commit()
@@ -232,17 +233,17 @@ class FirstClassCourse(db.Model):
             self.first_class_course_workload,
         ]
 
-    @classmethod
-    def add_first_class_course(self, course_type, content, leader, remark, teacher_name, teacher_id,
-                               first_class_course_workload):
+    @staticmethod
+    def add_first_class_course(json_data):
         new_course = FirstClassCourse(
-            course_type=course_type,
-            content=content,
-            leader=leader,
-            remark=remark,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            first_class_course_workload=first_class_course_workload
+            id=json_data["序号"],
+            course_type=json_data["课程性质"],
+            content=json_data["内容"],
+            leader=json_data["负责人"],
+            remark=json_data["备注"],
+            teacher_name=json_data["教师姓名"],
+            teacher_id=json_data["工号"],
+            first_class_course_workload=json_data["一流课程工作量"]
         )
         db.session.add(new_course)
         db.session.commit()
@@ -289,15 +290,17 @@ class PublicService(db.Model):
             self.teacher_id
         ]
 
-    @classmethod
-    def add_public_service_record(self, serve_date, content, teacher_name, work_duration, class_hours, teacher_id):
+    @staticmethod
+    def add_public_service_record(json_data):
         new_record = PublicService(
-            serve_date=serve_date,
-            content=content,
-            teacher_name=teacher_name,
-            work_duration=work_duration,
-            class_hours=class_hours,
-            teacher_id=teacher_id
+            id=json_data["序号"],
+            serve_date=json_data["日期"],
+            content=json_data["内容"],
+            teacher_name=json_data["姓名"],
+            work_duration=json_data["工作时长"],
+            class_hours=json_data["课时"],
+            teacher_id=json_data["教师工号"],
+            workload=json_data["工作量"]
         )
         db.session.add(new_record)
         db.session.commit()
@@ -344,19 +347,19 @@ class StudentResearch(db.Model):
             self.workload
         ]
 
-    @classmethod
-    def add_student_research_record(self, project_name, project_level, leader, student_id, total_members, teacher_name,
-                                    teacher_id, acceptance_result, workload):
+    @staticmethod
+    def add_student_research_record(json_data):
         new_record = StudentResearch(
-            project_name=project_name,
-            project_level=project_level,
-            leader=leader,
-            student_id=student_id,
-            total_members=total_members,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            acceptance_result=acceptance_result,
-            workload=workload
+            id=json_data["序号"],
+            project_name=json_data["项目名称"],
+            project_level=json_data["级别"],
+            leader=json_data["负责人"],
+            student_id=json_data["学号"],
+            total_members=json_data["项目组总人数"],
+            teacher_name=json_data["指导老师"],
+            teacher_id=json_data["指导老师工号"],
+            acceptance_result=json_data["验收结果"],
+            workload=json_data["工作量"]
         )
         db.session.add(new_record)
         db.session.commit()
@@ -407,21 +410,20 @@ class TeachingAchievementAward(db.Model):
             self.teacher_name, self.teacher_id, self.teaching_achievement_workload
         ]
 
-    @classmethod
-    def add_teaching_achievement_record(self, student_session, student_date, recommended_achievement_name,
-                                        main_completion_person_name, award_category, award_level, remark, teacher_name,
-                                        teacher_id, teaching_achievement_workload):
+    @staticmethod
+    def add_teaching_achievement_record(json_data):
         new_record = TeachingAchievementAward(
-            student_session=student_session,
-            student_date=student_date,
-            recommended_achievement_name=recommended_achievement_name,
-            main_completion_person_name=main_completion_person_name,
-            award_category=award_category,
-            award_level=award_level,
-            remark=remark,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            teaching_achievement_workload=teaching_achievement_workload
+            id=json_data["序号"],
+            student_session=json_data["届"],
+            student_date=json_data["时间"],
+            recommended_achievement_name=json_data["推荐成果名称"],
+            main_completion_person_name=json_data["成果主要完成人名称"],
+            award_category=json_data["获奖类别"],
+            award_level=json_data["获奖等级"],
+            remark=json_data["备注"],
+            teacher_name=json_data["教师"],
+            teacher_id=json_data["工号"],
+            teaching_achievement_workload=json_data["教学成果工作量"]
         )
         db.session.add(new_record)
         db.session.commit()
@@ -465,15 +467,15 @@ class UndergraduateMentorshipSystem(db.Model):
             self.grade, self.student_id, self.teacher_workload
         ]
 
-    @classmethod
-    def add_mentorship_record(self, teacher_name, teacher_id, student_name, grade, student_id, teacher_workload):
+    @staticmethod
+    def add_mentorship_record(json_data):
         new_record = UndergraduateMentorshipSystem(
-            teacher_name=teacher_name,
-            teacher_id=teacher_id,
-            student_name=student_name,
-            grade=grade,
-            student_id=student_id,
-            teacher_workload=teacher_workload
+            teacher_name=json_data["导师姓名"],
+            teacher_id=json_data["教工号"],
+            student_name=json_data["学生姓名"],
+            grade=json_data["年级"],
+            student_id=json_data["学号"],
+            teacher_workload=json_data["教师工作量"]
         )
         db.session.add(new_record)
         db.session.commit()
@@ -517,20 +519,19 @@ class UndergraduateThesi(db.Model):
             self.grade, self.thesis_topic, self.thesis_grade, self.teacher_name, self.teacher_id
         ]
 
-    @classmethod
-    def add_thesis_record(self, student_name, student_id, college, major, major_id, grade, thesis_topic, thesis_grade,
-                          teacher_name, teacher_id):
+    @staticmethod
+    def add_thesis_record(json_data):
         new_record = UndergraduateThesi(
-            student_name=student_name,
-            student_id=student_id,
-            college=college,
-            major=major,
-            major_id=major_id,
-            grade=grade,
-            thesis_topic=thesis_topic,
-            thesis_grade=thesis_grade,
-            teacher_name=teacher_name,
-            teacher_id=teacher_id
+            student_name=json_data["学生姓名"],
+            student_id=json_data["学生学号"],
+            college=json_data["学院"],
+            major=json_data["专业"],
+            major_id=json_data["专业号"],
+            grade=json_data["年级"],
+            thesis_topic=json_data["毕业论文题目"],
+            thesis_grade=json_data["毕业论文成绩"],
+            teacher_name=json_data["毕业论文指导老师"],
+            teacher_id=json_data["毕业论文指导老师工号"]
         )
         db.session.add(new_record)
         db.session.commit()
@@ -594,35 +595,30 @@ class UndergraduateWorkloadCourseRanking(db.Model):
             self.total_course_hours
         ]
 
-    @classmethod
-    def add_course_ranking(self, academic_year, semester, calendar_year, half_year, course_code, teaching_class,
-                           course_name, teacher_id, teacher_name, seminar_hours, lecture_hours, lab_hours,
-                           enrolled_students, student_weight_coefficient_b, course_type_coefficient_a,
-                           total_lecture_hours_p1, lab_group_count, lab_coefficient, total_lab_hours_p2,
-                           course_split_ratio_for_engineering_center,
-                           total_course_hours):
+    @staticmethod
+    def add_UndergraduateWorkloadCourseRanking(json_data):
         new_course_ranking = UndergraduateWorkloadCourseRanking(
-            academic_year=academic_year,
-            semester=semester,
-            calendar_year=calendar_year,
-            half_year=half_year,
-            course_code=course_code,
-            teaching_class=teaching_class,
-            course_name=course_name,
-            teacher_id=teacher_id,
-            teacher_name=teacher_name,
-            seminar_hours=seminar_hours,
-            lecture_hours=lecture_hours,
-            lab_hours=lab_hours,
-            enrolled_students=enrolled_students,
-            student_weight_coefficient_b=student_weight_coefficient_b,
-            course_type_coefficient_a=course_type_coefficient_a,
-            total_lecture_hours_p1=total_lecture_hours_p1,
-            lab_group_count=lab_group_count,
-            lab_coefficient=lab_coefficient,
-            total_lab_hours_p2=total_lab_hours_p2,
-            course_split_ratio_for_engineering_center=course_split_ratio_for_engineering_center,
-            total_course_hours=total_course_hours
+            academic_year=json_data["学年"],
+            semester=json_data["学期"],
+            calendar_year=json_data["自然年"],
+            half_year=json_data["上下半年"],
+            course_code=json_data["课程号"],
+            teaching_class=json_data["教学班"],
+            course_name=json_data["课程名称"],
+            teacher_id=json_data["教工号"],
+            teacher_name=json_data["教师名称"],
+            seminar_hours=json_data["研讨学时"],
+            lecture_hours=json_data["授课学时"],
+            lab_hours=json_data["实验学时"],
+            enrolled_students=json_data["选课人数"],
+            student_weight_coefficient_b=json_data["学生数量权重系数B"],
+            course_type_coefficient_a=json_data["课程类型系数A"],
+            total_lecture_hours_p1=json_data["理论课总学时P1"],
+            lab_group_count=json_data["实验分组数"],
+            lab_coefficient=json_data["实验课系数"],
+            total_lab_hours_p2=json_data["实验课总学时P2"],
+            course_split_ratio_for_engineering_center=json_data["课程拆分占比（工程中心用）"],
+            total_course_hours=json_data["课程总学时"]
         )
         db.session.add(new_course_ranking)
         db.session.commit()
@@ -704,34 +700,6 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
             self.first_class_course, self.teaching_achievement_award, self.public_service
         ]
 
-    @classmethod
-    def add_teacher_ranking(self, teacher_id, teacher_name, undergraduate_course_total_hours,
-                            graduation_thesis_student_count, graduation_thesis_p, teaching_internship_student_count,
-                            teaching_internship_weeks, teaching_internship_p,
-                            responsible_internship_construction_management_p, guiding_undergraduate_competition_p,
-                            guiding_undergraduate_research_p, undergraduate_tutor_system,
-                            teaching_research_and_reform_p, first_class_course, teaching_achievement_award,
-                            public_service):
-        new_teacher_ranking = UndergraduateWorkloadTeacherRanking(
-            teacher_id=teacher_id,
-            teacher_name=teacher_name,
-            undergraduate_course_total_hours=undergraduate_course_total_hours,
-            graduation_thesis_student_count=graduation_thesis_student_count,
-            graduation_thesis_p=graduation_thesis_p,
-            teaching_internship_student_count=teaching_internship_student_count,
-            teaching_internship_weeks=teaching_internship_weeks,
-            teaching_internship_p=teaching_internship_p,
-            responsible_internship_construction_management_p=responsible_internship_construction_management_p,
-            guiding_undergraduate_competition_p=guiding_undergraduate_competition_p,
-            guiding_undergraduate_research_p=guiding_undergraduate_research_p,
-            undergraduate_tutor_system=undergraduate_tutor_system,
-            teaching_research_and_reform_p=teaching_research_and_reform_p,
-            first_class_course=first_class_course,
-            teaching_achievement_award=teaching_achievement_award,
-            public_service=public_service
-        )
-        db.session.add(new_teacher_ranking)
-        db.session.commit()
 
 
 class workload_parameter(db.Model):
