@@ -133,7 +133,6 @@
 }
 
 
-
 /* 自定义下拉框样式 */
 select {
     width: 300px; /* 设置宽度为100px */
@@ -152,7 +151,7 @@ option {
 }
 
 input[type="text"] {
-    width: 300px; /* 设置宽度为100px */
+    width: 200px; /* 设置宽度为100px */
     height: 30px; /* 设置高度为30px */
     font-size: 16px;
     border: 1px solid #ccc;
@@ -215,4 +214,19 @@ input[type="text"] {
 
 .save-btn {
     background-color: green;
+}
+
+
+.right_menu a {
+    color: #0c0c0c; /* 黑色字体 */
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease; /* 添加颜色过渡效果 */
+    padding: 10px 15px;
+    border-radius: 5px; /* 圆角 */
+}
+
+.right_menu a:hover {
+    background-color: #5d80a5; /* 悬停时背景颜色 */
+    color: #ffffff; /* 悬停时字体颜色 */
 }

@@ -29,7 +29,7 @@
     text-align: center;
     margin: 0;
     padding: 10px 0;
-    color:white;
+    color: white;
     cursor: pointer; /* 添加指针样式 */
 }
 
@@ -49,10 +49,12 @@
     background-color: #8090f6;
     text-align: center;
 }
+
 .content {
     flex: 1;
     margin-left: 200px; /* 导航栏宽度 */
 }
+
 .right_menu {
     list-style-type: none;
     padding: 0;
@@ -62,16 +64,34 @@
     right: 0;
     display: flex; /* 使用 Flex 布局使得子元素横向排列 */
 }
+
 .right_menu li {
     padding: 10px;
     margin: 5px;
     background-color: #f2f2f2;
     border: 1px solid #ccc;
 }
+
 .Top {
     background-color: #3c8dbc; /* 设置背景颜色 */
     padding: 30px;
 }
+
 .cursor-pointer {
     cursor: pointer;
+}
+
+
+.right_menu a {
+    color: #0c0c0c; /* 黑色字体 */
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease; /* 添加颜色过渡效果 */
+    padding: 10px 15px;
+    border-radius: 5px; /* 圆角 */
+}
+
+.right_menu a:hover {
+    background-color: #5d80a5; /* 悬停时背景颜色 */
+    color: #ffffff; /* 悬停时字体颜色 */
 }

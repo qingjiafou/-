@@ -3,63 +3,104 @@
     padding: 0;
     box-sizing: border-box;
 }
-body{
-   margin: 0;
-   padding: 0;
-   background-image:url('https://gis.ccnu.edu.cn/Upload/photos/202201140921431084338255.png') ;
-   background-repeat: no-repeat;
-   background-size: cover;
-   background-position: revert;
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('https://gis.ccnu.edu.cn/Upload/photos/202201140921431084338255.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: revert;
 }
+
 .transparent-box {
-   background-color: rgba(255,255,255,0.8); /* 设置透明度框的背景颜色及透明度 */
-   width: 500px;
-   height: 300px;
-   margin: 0 auto;
-   margin-top: 100px;
-   padding: 20px;
-   border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* 设置透明度框的背景颜色及透明度 */
+    width: 500px;
+    height: 400px; /* 调整高度以适应表单内容 */
+    margin: 0 auto;
+    margin-top: 100px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
+
 h1 {
- font-size: 36px;
- margin-bottom: 30px;
- color: #555;
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #555;
+    text-align: center; /* 居中标题 */
 }
+
 label {
-font-size: 18px;
-color: #555;
- margin-top: 20px;
- display: block;
+    font-size: 18px;
+    color: #555;
+    margin-top: 20px;
+    display: block;
 }
+
 input[type="text"],
 input[type="password"] {
- border: none;
- padding: 10px 20px;
- font-size: 18px;
- border-radius: 5px;
- background: #f2f2f2;
- color: #555;
- width: 100%;
- margin-top: 10px;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    background: #f2f2f2;
+    color: #555;
+    width: 100%;
+    box-sizing: border-box; /* 包括padding和border在内的宽度 */
+    margin-top: 10px;
+    transition: background 0.3s ease-in-out; /* 输入框获得焦点时的过渡效果 */
 }
-input[type="submit"] {
- background: #555;
- color: #fff;
- font-size: 20px;
- padding: 10px 20px;
- border-radius: 5px;
- border: none;
- margin-top: 20px;
- cursor: pointer;
- transition: background 0.3s ease-in-out;
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    background: #e0e0e0; /* 获得焦点时的背景颜色 */
 }
-input[type="submit"]:hover {
- background: #333;
-}
+
 .error {
-   background-color: #f44336;
-   color: #fff;
-   text-align: center;
-   padding: 15px;
-   margin-bottom: 20px;
+    background-color: #f44336;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px; /* 上边距 */
+}
+
+button {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease-in-out;
+    margin-left: 10px; /* 按钮之间的间距 */
+}
+
+button:first-child {
+    margin-left: 0; /* 第一个按钮没有左边距 */
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+button[type="button"] {
+    background-color: #555;
+    color: white;
+}
+
+button[type="button"]:hover {
+    background-color: #333;
 }

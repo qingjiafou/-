@@ -86,3 +86,149 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+
+.right_menu a {
+    color: #0c0c0c; /* 黑色字体 */
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease; /* 添加颜色过渡效果 */
+    padding: 10px 15px;
+    border-radius: 5px; /* 圆角 */
+}
+
+.right_menu a:hover {
+    background-color: #5d80a5; /* 悬停时背景颜色 */
+    color: #ffffff; /* 悬停时字体颜色 */
+}
+
+.form-row {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.form-row p, .form-row select {
+    margin-right: 10px;
+}
+
+.form-row button {
+    margin-right: 10px;
+    background-color: #1ab394;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    font-size: 16px;
+    box-sizing: content-box;
+    border-radius: 5px;
+
+}
+
+/* 自定义下拉框样式 */
+select {
+    width: 300px; /* 设置宽度为100px */
+    height: 30px; /* 设置高度为30px */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+}
+
+/* 设置选项样式 */
+option {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+.search_condition {
+    margin: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 10px; /* 圆角半径为20px */
+    background-color: #ffffff; /* 设置背景颜色为白色 */
+}
+
+.upload_form {
+    background-color: #ffffff;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.add_form {
+    margin-bottom: 20px;
+}
+
+.upload-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+}
+
+.submit_form {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    height: 300px; /* 设置固定高度 */
+    overflow-y: auto; /* 允许垂直滚动 */
+}
+
+.exact_form {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: calc(100% - 20px); /* 考虑输入框的内边距 */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.btn-submit {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
