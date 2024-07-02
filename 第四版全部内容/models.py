@@ -5,9 +5,11 @@ from sqlalchemy import event, func
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
-class TeacherInformation(db.Model, UserMixin):
+class TeacherInformation(Base, UserMixin):
     __tablename__ = 'teacher_information'
 
     teacher_id = db.Column(db.String(255), primary_key=True, info={'description': '教工号'})
@@ -40,7 +42,7 @@ class TeacherInformation(db.Model, UserMixin):
         db.session.commit()
 
 
-class CompetitionAward(db.Model):
+class CompetitionAward(Base):
     __tablename__ = 'competition_awards'
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
     event_name = db.Column(db.String(24), info={'description': '赛事名称'})
@@ -90,7 +92,7 @@ class CompetitionAward(db.Model):
         db.session.commit()
 
 
-class DepartmentInternship(db.Model):
+class DepartmentInternship(Base):
     __tablename__ = 'department_internship'
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
@@ -137,7 +139,7 @@ class DepartmentInternship(db.Model):
         db.session.commit()
 
 
-class EducationalResearchProject(db.Model):
+class EducationalResearchProject(Base):
     __tablename__ = 'educational_research_project'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键'})
@@ -202,7 +204,7 @@ class EducationalResearchProject(db.Model):
         db.session.commit()
 
 
-class FirstClassCourse(db.Model):
+class FirstClassCourse(Base):
     __tablename__ = 'first_class_courses'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
@@ -262,7 +264,7 @@ class FirstClassCourse(db.Model):
         db.session.commit()
 
 
-class PublicService(db.Model):
+class PublicService(Base):
     __tablename__ = 'public_services'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
@@ -319,7 +321,7 @@ class PublicService(db.Model):
         db.session.add()
 
 
-class StudentResearch(db.Model):
+class StudentResearch(Base):
     __tablename__ = 'student_research'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
@@ -380,7 +382,7 @@ class StudentResearch(db.Model):
         db.session.commit()
 
 
-class TeachingAchievementAward(db.Model):
+class TeachingAchievementAward(Base):
     __tablename__ = 'teaching_achievement_awards'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
@@ -445,7 +447,7 @@ class TeachingAchievementAward(db.Model):
         db.session.commit()
 
 
-class UndergraduateMentorshipSystem(db.Model):
+class UndergraduateMentorshipSystem(Base):
     __tablename__ = 'undergraduate_mentorship_system'
 
     teacher_name = db.Column(db.String(24), info={'description': '导师姓名'})
@@ -493,7 +495,7 @@ class UndergraduateMentorshipSystem(db.Model):
         db.session.commit()
 
 
-class UndergraduateThesi(db.Model):
+class UndergraduateThesi(Base):
     __tablename__ = 'undergraduate_thesis'
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
@@ -552,7 +554,7 @@ class UndergraduateThesi(db.Model):
         db.session.commit()
 
 
-class UndergraduateWorkloadCourseRanking(db.Model):
+class UndergraduateWorkloadCourseRanking(Base):
     __tablename__ = 'undergraduate_workload_course_ranking'
 
     academic_year = db.Column(db.String(10), info={'description': '学年'})
@@ -660,7 +662,7 @@ class UndergraduateWorkloadCourseRanking(db.Model):
         db.session.commit()
 
 
-class UndergraduateWorkloadTeacherRanking(db.Model):
+class UndergraduateWorkloadTeacherRanking(Base):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
@@ -702,7 +704,7 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
 
 
 
-class workload_parameter(db.Model):
+class workload_parameter(Base):
     __tablename__ = 'workload_parameter'
 
     id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
