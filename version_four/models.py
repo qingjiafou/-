@@ -1,15 +1,15 @@
 # coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
-from database import db
+from version_four.database import db
 from sqlalchemy import event, func
 from sqlalchemy.orm import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+#Base = declarative_base()
 
-class TeacherInformation(Base, UserMixin):
+class TeacherInformation(db.Model, UserMixin):
     __tablename__ = 'teacher_information'
 
     teacher_id = db.Column(db.String(255), primary_key=True, info={'description': '教工号'})
@@ -42,9 +42,9 @@ class TeacherInformation(Base, UserMixin):
         db.session.commit()
 
 
-class CompetitionAward(Base):
+class CompetitionAward(db.Model):
     __tablename__ = 'competition_awards'
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     event_name = db.Column(db.String(24), info={'description': '赛事名称'})
     work_name = db.Column(db.String(24), info={'description': '作品名称'})
     award_category = db.Column(db.String(24), info={'description': '获奖类别'})
@@ -92,7 +92,7 @@ class CompetitionAward(Base):
         db.session.commit()
 
 
-class DepartmentInternship(Base):
+class DepartmentInternship(db.Model):
     __tablename__ = 'department_internship'
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
@@ -139,10 +139,10 @@ class DepartmentInternship(Base):
         db.session.commit()
 
 
-class EducationalResearchProject(Base):
+class EducationalResearchProject(db.Model):
     __tablename__ = 'educational_research_project'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
     project_leader = db.Column(db.String(24), info={'description': '项目负责人'})
     project_members = db.Column(db.String(24), info={'description': '项目成员'})
@@ -204,10 +204,10 @@ class EducationalResearchProject(Base):
         db.session.commit()
 
 
-class FirstClassCourse(Base):
+class FirstClassCourse(db.Model):
     __tablename__ = 'first_class_courses'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True, info={'description': '序号'})
     course_type = db.Column(db.String(24), info={'description': '课程性质'})
     content = db.Column(db.String(24), info={'description': '内容'})
     leader = db.Column(db.String(24), info={'description': '负责人'})
@@ -264,10 +264,10 @@ class FirstClassCourse(Base):
         db.session.commit()
 
 
-class PublicService(Base):
+class PublicService(db.Model):
     __tablename__ = 'public_services'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     serve_date = db.Column(db.String(24), info={'description': '日期'})
     content = db.Column(db.String(24), info={'description': '内容'})
     teacher_name = db.Column(db.String(24), info={'description': '姓名'})
@@ -321,10 +321,10 @@ class PublicService(Base):
         db.session.add()
 
 
-class StudentResearch(Base):
+class StudentResearch(db.Model):
     __tablename__ = 'student_research'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
     project_level = db.Column(db.String(24), info={'description': '级别'})
     leader = db.Column(db.String(24), info={'description': '负责人'})
@@ -382,10 +382,10 @@ class StudentResearch(Base):
         db.session.commit()
 
 
-class TeachingAchievementAward(Base):
+class TeachingAchievementAward(db.Model):
     __tablename__ = 'teaching_achievement_awards'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     student_session = db.Column(db.String(24), info={'description': '届'})
     student_date = db.Column(db.String(24), info={'description': '时间'})
     recommended_achievement_name = db.Column(db.String(24), info={'description': '推荐成果名称'})
@@ -447,7 +447,7 @@ class TeachingAchievementAward(Base):
         db.session.commit()
 
 
-class UndergraduateMentorshipSystem(Base):
+class UndergraduateMentorshipSystem(db.Model):
     __tablename__ = 'undergraduate_mentorship_system'
 
     teacher_name = db.Column(db.String(24), info={'description': '导师姓名'})
@@ -495,7 +495,7 @@ class UndergraduateMentorshipSystem(Base):
         db.session.commit()
 
 
-class UndergraduateThesi(Base):
+class UndergraduateThesi(db.Model):
     __tablename__ = 'undergraduate_thesis'
 
     student_name = db.Column(db.String(24), info={'description': '学生姓名'})
@@ -554,7 +554,7 @@ class UndergraduateThesi(Base):
         db.session.commit()
 
 
-class UndergraduateWorkloadCourseRanking(Base):
+class UndergraduateWorkloadCourseRanking(db.Model):
     __tablename__ = 'undergraduate_workload_course_ranking'
 
     academic_year = db.Column(db.String(10), info={'description': '学年'})
@@ -662,10 +662,10 @@ class UndergraduateWorkloadCourseRanking(Base):
         db.session.commit()
 
 
-class UndergraduateWorkloadTeacherRanking(Base):
+class UndergraduateWorkloadTeacherRanking(db.Model):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号，主键，自增，无意义'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
     teacher_id = db.Column(db.String(30), db.ForeignKey('teacher_information.teacher_id'),
                            info={'description': '教工号'})
     teacher_name = db.Column(db.String(50), info={'description': '教师名称'})  # 调整长度
@@ -704,10 +704,10 @@ class UndergraduateWorkloadTeacherRanking(Base):
 
 
 
-class workload_parameter(Base):
+class workload_parameter(db.Model):
     __tablename__ = 'workload_parameter'
 
-    id = db.Column(db.Integer, primary_key=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True, info={'description': '序号'})
     graduation_thesis_p_count = db.Column(db.Float, info={'description': '毕业论文参数'})
     intership_count = db.Column(db.Float, info={'description': '指导实习参数'})
     intership_js = db.Column(db.Float, info={'description': '实习点建设'})

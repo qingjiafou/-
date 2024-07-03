@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required
 
-from 第四版全部内容.models import CompetitionAward, DepartmentInternship, \
+from version_four.models import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
     UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking
 

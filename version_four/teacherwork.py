@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from models import Base  # 你的模型文件
+from version_four.models import Base  # 你的模型文件
 
 user = 'root'
 password = 'Mapanwei0116'

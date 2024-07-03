@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required
 
-from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking
+from version_four.models import UndergraduateWorkloadTeacherRanking
 
 """
 实例化蓝图对象

@@ -2,10 +2,10 @@
 import os
 from flask import Blueprint, render_template, request, current_app, flash, redirect, url_for
 from flask_login import login_required
-from 第四版全部内容.models import CompetitionAward, DepartmentInternship, \
+from version_four.models import CompetitionAward, DepartmentInternship, \
     EducationalResearchProject, FirstClassCourse, PublicService, StudentResearch, TeachingAchievementAward, \
     UndergraduateMentorshipSystem, UndergraduateThesi, UndergraduateWorkloadCourseRanking
-from 第四版全部内容.Config import Config
+from version_four.Config import Config
 
 """
 实例化蓝图对象

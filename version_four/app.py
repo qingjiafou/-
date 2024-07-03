@@ -1,22 +1,26 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from Config import Config
-from database import db
-from modify_page.modify_page_bp import modify_page_blueprint
-from 第四版全部内容.analyse_page.analyse_page_bp import analyse_page_blueprint
-from 第四版全部内容.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
-from 第四版全部内容.upload_page.upload_page_bp import upload_page_blueprint
+from version_four.Config import Config
+from version_four.database import db
+from version_four.modify_page.modify_page_bp import modify_page_blueprint
+from version_four.analyse_page.analyse_page_bp  import analyse_page_blueprint
+from version_four.upload_page.upload_page_bp import upload_page_blueprint
+from version_four.models import UndergraduateWorkloadTeacherRanking, TeacherInformation
 
 app = Flask(__name__, template_folder='templates')
-Migrate(app, db)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'  # 设置登录视图名称
+
 # 读取配置
 app.config.from_object(Config)
 
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # 设置登录视图名称
+
+
 # 创建数据库sqlalchemy工具对象
 db.init_app(app)
+
+Migrate(app, db)
 
 
 @login_manager.user_loader
