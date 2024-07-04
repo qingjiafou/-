@@ -7,7 +7,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy.ext.declarative import declarative_base
 
-#Base = declarative_base()
+
+# Base = declarative_base()
 
 class TeacherInformation(db.Model, UserMixin):
     __tablename__ = 'teacher_information'
@@ -44,7 +45,7 @@ class TeacherInformation(db.Model, UserMixin):
 
 class CompetitionAward(db.Model):
     __tablename__ = 'competition_awards'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     event_name = db.Column(db.String(24), info={'description': '赛事名称'})
     work_name = db.Column(db.String(24), info={'description': '作品名称'})
     award_category = db.Column(db.String(24), info={'description': '获奖类别'})
@@ -58,8 +59,21 @@ class CompetitionAward(db.Model):
     teacher = db.relationship('TeacherInformation', backref='competition_awards')
 
     @classmethod
-    def CompetitionAward_list(cls):
-        return cls.query.all()
+    def CompetitionAward_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.event_name,
+                result.work_name,
+                result.award_category,
+                result.award_level,
+                result.teacher_name,
+                result.teacher_id,
+                result.total_workload,
+                result.award_year
+            ])
+        return data_list
 
     @staticmethod
     def add_competition_award(json_data):
@@ -108,8 +122,19 @@ class DepartmentInternship(db.Model):
                               backref='department_internships')
 
     @classmethod
-    def DepartmentInternship_list(self):
-        return [self.student_name, self.student_id, self.major, self.grade, self.teacher_name, self.teacher_id]
+    def DepartmentInternship_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.student_name,
+                result.student_id,
+                result.major,
+                result.grade,
+                result.teacher_name,
+                result.teacher_id,
+                result.week
+            ])
+        return data_list
 
     @staticmethod
     def add_internship_record(json_data):
@@ -142,7 +167,7 @@ class DepartmentInternship(db.Model):
 class EducationalResearchProject(db.Model):
     __tablename__ = 'educational_research_project'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
     project_leader = db.Column(db.String(24), info={'description': '项目负责人'})
     project_members = db.Column(db.String(24), info={'description': '项目成员'})
@@ -161,12 +186,23 @@ class EducationalResearchProject(db.Model):
                               backref='educational_research_projects')
 
     @classmethod
-    def EducationalResearchProject_list(self):
-        return [
-            self.id,
-            self.project_name, self.project_leader, self.project_members, self.project_level, self.start_date,
-            self.end_date, self.acceptance_result, self.teacher_name, self.teacher_id, self.research_project_workload
-        ]
+    def EducationalResearchProject_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.project_name,
+                result.project_leader,
+                result.project_members,
+                result.project_level,
+                result.start_date,
+                result.end_date,
+                result.acceptance_result,
+                result.teacher_name,
+                result.teacher_id,
+                result.research_project_workload
+            ])
+        return data_list
 
     @staticmethod
     def add_research_project(json_data):
@@ -207,7 +243,7 @@ class EducationalResearchProject(db.Model):
 class FirstClassCourse(db.Model):
     __tablename__ = 'first_class_courses'
 
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     course_type = db.Column(db.String(24), info={'description': '课程性质'})
     content = db.Column(db.String(24), info={'description': '内容'})
     leader = db.Column(db.String(24), info={'description': '负责人'})
@@ -223,17 +259,20 @@ class FirstClassCourse(db.Model):
                               backref='first_class_courses')
 
     @classmethod
-    def FirstClassCourse_list(self):
-        return [
-            self.id,
-            self.course_type,
-            self.content,
-            self.leader,
-            self.remark,
-            self.teacher_name,
-            self.teacher_id,
-            self.first_class_course_workload,
-        ]
+    def FirstClassCourse_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.course_type,
+                result.content,
+                result.leader,
+                result.remark,
+                result.teacher_name,
+                result.teacher_id,
+                result.first_class_course_workload
+            ])
+        return data_list
 
     @staticmethod
     def add_first_class_course(json_data):
@@ -267,7 +306,7 @@ class FirstClassCourse(db.Model):
 class PublicService(db.Model):
     __tablename__ = 'public_services'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     serve_date = db.Column(db.String(24), info={'description': '日期'})
     content = db.Column(db.String(24), info={'description': '内容'})
     teacher_name = db.Column(db.String(24), info={'description': '姓名'})
@@ -281,16 +320,19 @@ class PublicService(db.Model):
                               backref='public_services')
 
     @classmethod
-    def PublicService_list(self):
-        return [
-            self.id,
-            self.serve_date,
-            self.content,
-            self.teacher_name,
-            self.work_duration,
-            self.class_hours,
-            self.teacher_id
-        ]
+    def PublicService_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.serve_date,
+                result.content,
+                result.teacher_name,
+                result.work_duration,
+                result.class_hours,
+                result.teacher_id
+            ])
+        return data_list
 
     @staticmethod
     def add_public_service_record(json_data):
@@ -324,7 +366,7 @@ class PublicService(db.Model):
 class StudentResearch(db.Model):
     __tablename__ = 'student_research'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     project_name = db.Column(db.String(24), info={'description': '项目名称'})
     project_level = db.Column(db.String(24), info={'description': '级别'})
     leader = db.Column(db.String(24), info={'description': '负责人'})
@@ -341,13 +383,22 @@ class StudentResearch(db.Model):
                               backref='student_researches')
 
     @classmethod
-    def StudentResearch_list(self):
-        return [
-            self.id, self.project_name, self.project_level,
-            self.leader, self.student_id, self.total_members,
-            self.teacher_name, self.teacher_id, self.acceptance_result,
-            self.workload
-        ]
+    def StudentResearch_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.project_name,
+                result.project_level,
+                result.leader,
+                result.student_id,
+                result.total_members,
+                result.teacher_name,
+                result.teacher_id,
+                result.acceptance_result,
+                result.workload
+            ])
+        return data_list
 
     @staticmethod
     def add_student_research_record(json_data):
@@ -385,7 +436,7 @@ class StudentResearch(db.Model):
 class TeachingAchievementAward(db.Model):
     __tablename__ = 'teaching_achievement_awards'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     student_session = db.Column(db.String(24), info={'description': '届'})
     student_date = db.Column(db.String(24), info={'description': '时间'})
     recommended_achievement_name = db.Column(db.String(24), info={'description': '推荐成果名称'})
@@ -404,13 +455,23 @@ class TeachingAchievementAward(db.Model):
                               backref='teaching_achievement_awards')
 
     @classmethod
-    def TeachingAchievementAward_list(self):
-        return [
-            self.id, self.student_session, self.student_date,
-            self.recommended_achievement_name, self.main_completion_person_name,
-            self.award_category, self.award_level, self.remark,
-            self.teacher_name, self.teacher_id, self.teaching_achievement_workload
-        ]
+    def TeachingAchievementAward_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.id,
+                result.student_session,
+                result.student_date,
+                result.recommended_achievement_name,
+                result.main_completion_person_name,
+                result.award_category,
+                result.award_level,
+                result.remark,
+                result.teacher_name,
+                result.teacher_id,
+                result.teaching_achievement_workload
+            ])
+        return data_list
 
     @staticmethod
     def add_teaching_achievement_record(json_data):
@@ -463,11 +524,18 @@ class UndergraduateMentorshipSystem(db.Model):
                               backref='undergraduate_mentorship_systems')
 
     @classmethod
-    def UndergraduateMentorshipSystem_list(self):
-        return [
-            self.teacher_name, self.teacher_id, self.student_name,
-            self.grade, self.student_id, self.teacher_workload
-        ]
+    def UndergraduateMentorshipSystem_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.teacher_name,
+                result.teacher_id,
+                result.student_name,
+                result.grade,
+                result.student_id,
+                result.teacher_workload
+            ])
+        return data_list
 
     @staticmethod
     def add_mentorship_record(json_data):
@@ -515,11 +583,23 @@ class UndergraduateThesi(db.Model):
                               backref='undergraduate_thesis')
 
     @classmethod
-    def UndergraduateThesi_list(self):
-        return [
-            self.student_name, self.student_id, self.college, self.major, self.major_id,
-            self.grade, self.thesis_topic, self.thesis_grade, self.teacher_name, self.teacher_id
-        ]
+    def UndergraduateThesi_list(cls):
+        results = cls.query.all()
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.student_name,
+                result.student_id,
+                result.college,
+                result.major,
+                result.major_id,
+                result.grade,
+                result.thesis_topic,
+                result.thesis_grade,
+                result.teacher_name,
+                result.teacher_id
+            ])
+        return data_list
 
     @staticmethod
     def add_thesis_record(json_data):
@@ -587,15 +667,33 @@ class UndergraduateWorkloadCourseRanking(db.Model):
                               backref='undergraduate_workload_course_rankings')
 
     @classmethod
-    def UndergraduateWorkloadCourseRanking_list(self):
-        return [
-            self.academic_year, self.semester, self.calendar_year, self.half_year, self.course_code,
-            self.teaching_class, self.course_name, self.teacher_id, self.teacher_name, self.seminar_hours,
-            self.lecture_hours, self.lab_hours, self.enrolled_students, self.student_weight_coefficient_b,
-            self.course_type_coefficient_a, self.total_lecture_hours_p1, self.lab_group_count, self.lab_coefficient,
-            self.total_lab_hours_p2, self.course_split_ratio_for_engineering_center,
-            self.total_course_hours
-        ]
+    def UndergraduateWorkloadCourseRanking_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.academic_year,
+                result.semester,
+                result.calendar_year,
+                result.half_year,
+                result.course_code,
+                result.teaching_class,
+                result.course_name,
+                result.teacher_id,
+                result.teacher_name,
+                result.seminar_hours,
+                result.lecture_hours,
+                result.lab_hours,
+                result.enrolled_students,
+                result.student_weight_coefficient_b,
+                result.course_type_coefficient_a,
+                result.total_lecture_hours_p1,
+                result.lab_group_count,
+                result.lab_coefficient,
+                result.total_lab_hours_p2,
+                result.course_split_ratio_for_engineering_center,
+                result.total_course_hours
+            ])
+        return data_list
 
     @staticmethod
     def add_UndergraduateWorkloadCourseRanking(json_data):
@@ -665,7 +763,7 @@ class UndergraduateWorkloadCourseRanking(db.Model):
 class UndergraduateWorkloadTeacherRanking(db.Model):
     __tablename__ = 'undergraduate_workload_teacher_ranking'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True,info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     teacher_id = db.Column(db.String(30), db.ForeignKey('teacher_information.teacher_id'),
                            info={'description': '教工号'})
     teacher_name = db.Column(db.String(50), info={'description': '教师名称'})  # 调整长度
@@ -689,25 +787,34 @@ class UndergraduateWorkloadTeacherRanking(db.Model):
                               primaryjoin='UndergraduateWorkloadTeacherRanking.teacher_id == TeacherInformation.teacher_id',
                               backref='undergraduate_workload_teacher_ranking')
 
-    @classmethod
-    def UndergraduateWorkloadTeacherRanking_list(self):
-        return [
-            self.teacher_id, self.teacher_name,
-            self.undergraduate_course_total_hours,
-            self.graduation_thesis_student_count, self.graduation_thesis_p,
-            self.teaching_internship_student_count, self.teaching_internship_weeks,
-            self.teaching_internship_p, self.responsible_internship_construction_management_p,
-            self.guiding_undergraduate_competition_p, self.guiding_undergraduate_research_p,
-            self.undergraduate_tutor_system, self.teaching_research_and_reform_p,
-            self.first_class_course, self.teaching_achievement_award, self.public_service
-        ]
-
+    def UndergraduateWorkloadTeacherRanking_list(cls,results):
+        data_list = []
+        for result in results:
+            data_list.append([
+                result.teacher_id,
+                result.teacher_name,
+                result.undergraduate_course_total_hours,
+                result.graduation_thesis_student_count,
+                result.graduation_thesis_p,
+                result.teaching_internship_student_count,
+                result.teaching_internship_weeks,
+                result.teaching_internship_p,
+                result.responsible_internship_construction_management_p,
+                result.guiding_undergraduate_competition_p,
+                result.guiding_undergraduate_research_p,
+                result.undergraduate_tutor_system,
+                result.teaching_research_and_reform_p,
+                result.first_class_course,
+                result.teaching_achievement_award,
+                result.public_service
+            ])
+        return data_list
 
 
 class workload_parameter(db.Model):
     __tablename__ = 'workload_parameter'
 
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True, info={'description': '序号'})
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, info={'description': '序号'})
     graduation_thesis_p_count = db.Column(db.Float, info={'description': '毕业论文参数'})
     intership_count = db.Column(db.Float, info={'description': '指导实习参数'})
     intership_js = db.Column(db.Float, info={'description': '实习点建设'})
