@@ -121,50 +121,50 @@ def upload_file_add():
 @upload_page_blueprint.route("/file_upload/submit", methods=['POST', 'GET'])
 @login_required
 def upload_file_submit():
-    if request.method == 'post':
+    if request.method == 'POST':
         # 获取前端发送的 JSON 数据
         json_data = request.get_json()
         if json_data:
             table_name = json_data["表名"]
             if table_name == "本科工作量课程排序表":
                 UndergraduateWorkloadCourseRanking.add_UndergraduateWorkloadCourseRanking(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "毕业论文":
                 UndergraduateThesi.add_thesis_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "本科实习":
                 DepartmentInternship.add_internship_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "学生竞赛":
                 # columns = ["序号", "赛事名称", "作品名称", "获奖类别", "获奖等级", "指导教师", "指导教师工号", "总工作量","获奖年份"]
                 CompetitionAward.add_competition_award(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "学生科研":
                 # columns = ["序号", "项目名称", "级别", "负责人", "学号", "项目组总人数", "指导老师", "指导老师工号", "验收结果","工作量"]
                 StudentResearch.add_student_research_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "本科生导师制":
                 # columns = ["导师姓名", "教工号", "学生姓名", "年级", "学号", "教师工作量"]
                 UndergraduateMentorshipSystem.add_mentorship_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "教研项目":
                 # columns = ["序号", "项目名称", "项目负责人", "项目成员", "级别", "立项时间", "结项时间", "验收结论",
                 #                    "教师姓名", "工号", "教研项目工作量"]
                 EducationalResearchProject.add_research_project(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "一流课程":
                 # columns = ["序号", "课程性质", "内容", "负责人", "备注", "教师姓名", "工号", "一流课程工作量"]
                 FirstClassCourse.add_first_class_course(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "教学成果奖":
                 # columns = ["序号", "届", "时间", "推荐成果名称", "成果主要完成人名称", "获奖类别", "获奖等级", "备注", "教师",
                 #   "工号", "教学成果工作量"]
                 TeachingAchievementAward.add_teaching_achievement_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
             elif table_name == "公共服务":
                 # columns = ["序号", "日期", "内容", "姓名", "工作时长", "课时", "教师工号"]
                 PublicService.add_public_service_record(json_data)
-                return redirect(url_for('file_upload'))
+                return render_template('file_upload.html')
         else:
             print("NO DATA")
     else:

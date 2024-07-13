@@ -66,9 +66,10 @@
                 <div class="add_form">
                     <form action="/file_upload/load" method="post" enctype="multipart/form-data" class="upload-form">
                         <label for="file-upload" class="custom-file-upload">
-                            <i class="fa fa-cloud-upload"></i> 选择文件
+                            <i class="fa fa-cloud-upload"></i> 导入文件
                         </label>
-                        <button type="submit" class="btn-submit">导入</button>
+                        <input id="file-upload" type="file" name="file" style="display:none;"
+                               onchange="this.parentElement.submit();">
                     </form>
                     <!-- 上传的消息 -->
                     <div class="upload-messages">
@@ -86,18 +87,56 @@
 
                 <!-- 手动添加数据表单 -->
                 <div class="submit_form">
-                    <form action="/file_upload/submit" method="post" class="exact_form">
-                        <input type="hidden" name="{{ table_name }}" value="{{ table_name }}">
+                    <form action="/file_upload/submit" method="post" class="exact_form" id="uploadForm">
+                        <!-- Hidden field for table_name, dynamically populated by Flask -->
+                        <input type="hidden" name="表名" value="{{ table_name }}">
                         {% for column in columns %}
                             <div class="form-group">
                                 <label for="{{ column }}">{{ column }}</label>
                                 <input type="text" id="{{ column }}" name="{{ column }}" class="form-control" required>
                             </div>
                         {% endfor %}
-                        <button type="submit" class="btn-submit">上传</button>
+                        <button type="button" class="btn-submit" onclick="submitForm()">上传</button>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+    <script>
+        function submitForm() {
+            // 获取表单元素
+            const form = document.getElementById('uploadForm');
+            // 创建一个空的 JavaScript 对象，用于存储表单数据
+            const formData = {};
+
+            // 遍历表单中的所有输入框
+            for (let i = 0; i < form.elements.length; i++) {
+                const element = form.elements[i];
+
+                // 忽略非输入元素和未命名的元素
+                if (element.tagName === 'INPUT' && element.type !== 'submit' && element.name) {
+                    formData[element.name] = element.value; // 将表单数据添加到 formData 对象中
+                }
+            }
+            // 将 formData 对象转换为 JSON 字符串
+            const jsonData = JSON.stringify(formData);
+
+            // 在控制台输出 JSON 数据，以便检查
+            console.log('JSON 数据:', jsonData);
+            // 在此处可以使用 fetch API 或其他方式将 jsonData 发送到后端
+            // 例如：
+             fetch('/file_upload/submit', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: jsonData
+             })
+             .then(response => response.json())
+             .then(data => console.log('后端响应:', data))
+             .catch(error => console.error('Error:', error));
+        }
+    </script>
+</div>
 </body>
 </html>
