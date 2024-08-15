@@ -41,9 +41,9 @@
             <!--选择框 -->
             <div class="search_condition">
                 <!-- 选择要手动添加数据的表 -->
-                <form action="/file_upload/add" method="post">
+                <form action="/file_upload/add" method="post" id="selectForm">
                     <div class="form-row">
-                        <select name="worksheet">
+                        <select name="worksheet" id="worksheetSelect">
                             <option value="NULL">请选择要添加数据的表</option>
                             <option value="undergraduate_workload_course_ranking">本科工作量课程排序表</option>
                             <option value="undergraduate_thesis">毕业论文</option>
@@ -64,13 +64,17 @@
             <div class="upload_form">
                 <!-- 文件上传表单 -->
                 <div class="add_form">
-                    <form action="/file_upload/load" method="post" enctype="multipart/form-data" class="upload-form">
+                    <form action="/file_upload/load" method="post" enctype="multipart/form-data" class="upload-form"
+                          id="fileUploadForm">
+                        <input type="hidden" name="selectedWorksheet" id="selectedWorksheet" value="">
                         <label for="file-upload" class="custom-file-upload">
                             <i class="fa fa-cloud-upload"></i> 导入文件
                         </label>
                         <input id="file-upload" type="file" name="file" style="display:none;"
-                               onchange="this.parentElement.submit();">
+                               onchange="updateSelectedWorksheet(); this.form.submit();">
                     </form>
+
+
                     <!-- 上传的消息 -->
                     <div class="upload-messages">
                         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -125,17 +129,21 @@
             console.log('JSON 数据:', jsonData);
             // 在此处可以使用 fetch API 或其他方式将 jsonData 发送到后端
             // 例如：
-             fetch('/file_upload/submit', {
-                 method: 'POST',
-                 headers: {
-                     'Content-Type': 'application/json'
-                 },
-                 body: jsonData
-             })
-             .then(response => response.json())
-             .then(data => console.log('后端响应:', data))
-             .catch(error => console.error('Error:', error));
+            fetch('/file_upload/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+                .then(response => response.json())
+                .then(data => console.log('后端响应:', data))
+                .catch(error => console.error('Error:', error));
         }
+        function updateSelectedWorksheet() {
+        var selectedWorksheet = document.getElementById("worksheetSelect").value;
+        document.getElementById("selectedWorksheet").value = selectedWorksheet;
+    }
     </script>
 </div>
 </body>
